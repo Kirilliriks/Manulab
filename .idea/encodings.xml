@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/src/main/java/me/kirillirik/Main.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/me/kirillirik/database/SyncQuery.java" charset="windows-1251" />
+    <file url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-dbutils/commons-dbutils/1.7/38e00df900c6c0dd01dec42ad411ff44de10ac0b/commons-dbutils-1.7-sources.jar!/org/apache/commons/dbutils/AbstractQueryRunner.java" charset="UTF-8" />
+  </component>
+</project>
