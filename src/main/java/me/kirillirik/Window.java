@@ -16,6 +16,9 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public final class Window {
+
+    private static int width;
+    private static int height;
     private final ImGuiImplGlfw imGuiGlfw = new ImGuiImplGlfw();
     private final ImGuiImplGl3 imGuiGl3 = new ImGuiImplGl3();
 
@@ -60,7 +63,10 @@ public final class Window {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-        windowPtr = glfwCreateWindow(1920, 1080, "My Window", NULL, NULL);
+
+        width = 1920;
+        height = 1080;
+        windowPtr = glfwCreateWindow(width, height, "Manul", NULL, NULL);
 
         if (windowPtr == NULL) {
             System.out.println("Unable to create window");
@@ -78,7 +84,6 @@ public final class Window {
         ImGui.createContext();
 
         final ImGuiIO io = ImGui.getIO();
-        io.addConfigFlags(ImGuiConfigFlags.ViewportsEnable);
         io.getFonts().addFontFromFileTTF("C:\\Windows\\Fonts\\Arial.ttf", 20, io.getFonts().getGlyphRangesCyrillic());
     }
 
@@ -105,5 +110,13 @@ public final class Window {
             GLFW.glfwSwapBuffers(windowPtr);
             GLFW.glfwPollEvents();
         }
+    }
+
+    public static int getWidth() {
+        return width;
+    }
+
+    public static int getHeight() {
+        return height;
     }
 }

@@ -5,6 +5,7 @@ import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.ImString;
 import me.kirillirik.User;
 import me.kirillirik.database.Database;
+import me.kirillirik.manulab.Manulab;
 import me.kirillirik.util.PasswordUtil;
 
 import java.sql.ResultSet;
@@ -56,7 +57,7 @@ public final class Auth {
             user = loadUser();
 
             if (user != null) {
-
+                Manulab.setState(Manulab.State.MAIN_MANUL);
             } else {
                 info = "Неверный логин или пароль!";
             }
