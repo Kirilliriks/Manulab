@@ -42,6 +42,10 @@ public abstract class Table <T extends TableRow> {
 
     protected abstract void insertRow(T row);
 
+    protected String selectWhat() {
+        return "*";
+    }
+
     protected void addNewRow() {
         rows.add(newRow());
 
@@ -72,7 +76,7 @@ public abstract class Table <T extends TableRow> {
             }
         }
 
-        Database.async().rs("select * from \"" + type.name().toLowerCase() + "\"", rs -> {
+        Database.async().rs("select " + selectWhat() + " from \"" + type.name().toLowerCase() + "\"", rs -> {
             rows.clear();
 
             while (rs.next()) {

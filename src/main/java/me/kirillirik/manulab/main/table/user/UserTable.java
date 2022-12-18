@@ -112,4 +112,9 @@ public final class UserTable extends Table<UserRow> {
         Database.sync().update("insert into \"user\"(login, password, salt, role, collector_id) values(?, ?, ?, ?, ?)",
                 row.getLogin(), row.getNewPassword(), row.getNewSalt(), row.getRole(), row.getCollectorID());
     }
+
+    @Override
+    protected String selectWhat() {
+        return "id, login, role, collector_id";
+    }
 }
