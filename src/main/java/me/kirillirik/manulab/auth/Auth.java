@@ -133,8 +133,11 @@ public final class Auth {
 
         try {
             final BufferedReader reader = new BufferedReader(new FileReader(file));
-            return Database.sync().rs("select * from \"user\" where login = ? and password = ?",
+
+            final Boolean result = Database.sync().rs("select * from \"user\" where login = ? and password = ?",
                     ResultSet::next, reader.readLine(), reader.readLine());
+            
+            return result != null && result;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
