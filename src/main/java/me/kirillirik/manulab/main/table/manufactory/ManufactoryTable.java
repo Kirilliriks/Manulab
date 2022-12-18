@@ -16,12 +16,12 @@ public final class ManufactoryTable extends Table<ManufactoryRow> {
 
     @Override
     protected void updateRow(ManufactoryRow row) {
-        Database.async().update("update manufactory set name = ? where id = ?", row.getName(), row.getID());
+        Database.sync().update("update manufactory set name = ? where id = ?", row.getName(), row.getID());
     }
 
     @Override
     protected void insertRow(ManufactoryRow row) {
-        Database.async().insert("insert into manufactory(name) values(?)", rs -> null, row.getName());
+        Database.sync().insert("insert into manufactory(name) values(?)", rs -> null, row.getName());
     }
 
     @Override
@@ -35,18 +35,22 @@ public final class ManufactoryTable extends Table<ManufactoryRow> {
     }
 
     @Override
+    protected void removeRow(ManufactoryRow row) {
+        Database.sync().update("delete from manufactory where id = ?", row.getID());
+    }
+
+    @Override
     protected void initTableConfig() {
         ImGui.tableSetupColumn("ID");
         ImGui.tableSetupColumn("Name");
     }
 
-
     @Override
-    protected void tableRow(ManufactoryRow row) {
-        ImGui.tableSetColumnIndex(0);
+    protected void addRow(int index, ManufactoryRow row) {
+        ImGui.tableSetColumnIndex(1);
         ImGui.text(String.valueOf(row.getID()));
 
-        ImGui.tableSetColumnIndex(1);
+        ImGui.tableSetColumnIndex(2);
         ImGui.pushItemWidth(ImGui.getContentRegionAvailX());
         if (ImGui.inputText("##name",  row.name())) {
             row.dirty();

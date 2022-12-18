@@ -19,12 +19,12 @@ public final class AsyncQuery {
         this.executor = Executors.newFixedThreadPool(3);
     }
 
-    public CompletableFuture<Integer> update(@Language("SQL") String sql, Object... params) {
-        return asCompletableFuture(() -> runner.update(sql, params));
-    }
-
     public <T> CompletableFuture<T> insert(@Language("SQL") String sql, ResultSetHandler<T> handler, Object... params) {
         return asCompletableFuture(() -> runner.insert(sql, handler, params));
+    }
+
+    public CompletableFuture<Integer> update(@Language("SQL") String sql, Object... params) {
+        return asCompletableFuture(() -> runner.update(sql, params));
     }
 
     public <T> CompletableFuture<T> rs(@Language("SQL") String sql, ResultSetHandler<T> handler) {

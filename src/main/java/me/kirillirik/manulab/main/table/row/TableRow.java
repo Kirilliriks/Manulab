@@ -7,7 +7,7 @@ public abstract class TableRow {
 
     public TableRow(boolean newRow) {
         this.newRow = newRow;
-        this.dirty = !newRow;
+        this.dirty = newRow;
     }
 
     public void dirty() {
