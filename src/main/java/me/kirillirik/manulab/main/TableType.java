@@ -5,6 +5,7 @@ import me.kirillirik.manulab.auth.Role;
 import me.kirillirik.manulab.main.table.Table;
 import me.kirillirik.manulab.main.table.collector.CollectorTable;
 import me.kirillirik.manulab.main.table.manufactory.ManufactoryTable;
+import me.kirillirik.manulab.main.table.product.ProductTable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +34,7 @@ public enum TableType {
             Role.COLLECTOR.addPermissions(Permission.EDIT, Permission.VIEW)
     ),
     PRODUCT("Изделия",
-            ManufactoryTable::new,
+            ProductTable::new,
             Role.ADMIN.addPermissions(Permission.EDIT_ALL, Permission.VIEW),
             Role.DIRECTOR.addPermissions(Permission.EDIT_ALL, Permission.VIEW),
             Role.MANAGER.addPermissions(Permission.VIEW),
