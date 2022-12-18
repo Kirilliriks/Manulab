@@ -18,31 +18,39 @@ public final class SyncQuery {
         try {
             return runner.update(sql, params);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
+
+        return -1;
     }
 
     public <T> T insert(@Language("SQL") String sql, ResultSetHandler<T> handler, Object... params) {
         try {
             return runner.insert(sql, handler, params);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
+
+        return null;
     }
 
     public <T> T rs(@Language("SQL") String sql, ResultSetHandler<T> handler) {
         try {
             return runner.query(sql, handler);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
+
+        return null;
     }
 
     public <T> T rs(@Language("SQL") String sql, ResultSetHandler<T> handler, Object... params) {
         try {
             return runner.query(sql, handler, params);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
+
+        return null;
     }
 }

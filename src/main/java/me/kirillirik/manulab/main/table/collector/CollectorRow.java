@@ -24,4 +24,32 @@ public final class CollectorRow extends TableRow {
 
         this.manufactoryID = new ImInt(manufactoryID);
     }
+
+    public int getID() {
+        return id;
+    }
+
+    public ImString secondName() {
+        return secondName;
+    }
+
+    public String getSecondName() {
+        return secondName.get();
+    }
+
+    public ImString firstName() {
+        return firstName;
+    }
+
+    public String getFirstName() {
+        return firstName.get();
+    }
+
+    public ImInt manufactoryID() {
+        return manufactoryID;
+    }
+
+    public int getManufactoryID() {
+        return manufactoryID.get();
+    }
 }

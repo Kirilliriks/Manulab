@@ -3,6 +3,7 @@ package me.kirillirik.manulab.main;
 import me.kirillirik.manulab.auth.Permission;
 import me.kirillirik.manulab.auth.Role;
 import me.kirillirik.manulab.main.table.Table;
+import me.kirillirik.manulab.main.table.collector.CollectorTable;
 import me.kirillirik.manulab.main.table.manufactory.ManufactoryTable;
 
 import java.util.HashMap;
@@ -18,7 +19,7 @@ public enum TableType {
             Role.COLLECTOR.addPermissions(Permission.VIEW)
     ),
     COLLECTOR("Сборщики",
-            ManufactoryTable::new,
+            CollectorTable::new,
             Role.ADMIN.addPermissions(Permission.EDIT_ALL, Permission.VIEW),
             Role.DIRECTOR.addPermissions(Permission.EDIT_ALL, Permission.VIEW),
             Role.MANAGER.addPermissions(Permission.EDIT_ALL, Permission.VIEW),

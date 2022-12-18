@@ -32,7 +32,7 @@ public abstract class Table <T extends TableRow> {
     }
 
     protected abstract T newRow();
-    protected abstract T getRow(ResultSet resultSet) throws SQLException;
+    protected abstract T getRow(ResultSet rs) throws SQLException;
     protected abstract void removeRow(T row);
 
     protected abstract void initTableConfig();
@@ -138,6 +138,14 @@ public abstract class Table <T extends TableRow> {
                         if (ImGui.selectable("Удалить выбранные строки")) {
                             removeSelectedRows();
                         }
+                    }
+
+                    if (ImGui.selectable("Обновить")) {
+                        refresh(false);
+                    }
+
+                    if (ImGui.selectable("Сохранить")) {
+                        refresh(true);
                     }
 
                     ImGui.endPopup();

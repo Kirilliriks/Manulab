@@ -15,23 +15,13 @@ public final class ManufactoryTable extends Table<ManufactoryRow> {
     }
 
     @Override
-    protected void updateRow(ManufactoryRow row) {
-        Database.sync().update("update manufactory set name = ? where id = ?", row.getName(), row.getID());
-    }
-
-    @Override
-    protected void insertRow(ManufactoryRow row) {
-        Database.sync().insert("insert into manufactory(name) values(?)", rs -> null, row.getName());
-    }
-
-    @Override
     protected ManufactoryRow newRow() {
         return new ManufactoryRow(-1, "Введите имя", true);
     }
 
     @Override
-    protected ManufactoryRow getRow(ResultSet resultSet) throws SQLException {
-        return new ManufactoryRow(resultSet.getInt("id"), resultSet.getString("name"), false);
+    protected ManufactoryRow getRow(ResultSet rs) throws SQLException {
+        return new ManufactoryRow(rs.getInt("id"), rs.getString("name"), false);
     }
 
     @Override
@@ -42,7 +32,7 @@ public final class ManufactoryTable extends Table<ManufactoryRow> {
     @Override
     protected void initTableConfig() {
         ImGui.tableSetupColumn("ID");
-        ImGui.tableSetupColumn("Name");
+        ImGui.tableSetupColumn("Название");
     }
 
     @Override
@@ -57,5 +47,15 @@ public final class ManufactoryTable extends Table<ManufactoryRow> {
 
             dirty();
         }
+    }
+
+    @Override
+    protected void updateRow(ManufactoryRow row) {
+        Database.sync().update("update manufactory set name = ? where id = ?", row.getName(), row.getID());
+    }
+
+    @Override
+    protected void insertRow(ManufactoryRow row) {
+        Database.sync().insert("insert into manufactory(name) values(?)", rs -> null, row.getName());
     }
 }
