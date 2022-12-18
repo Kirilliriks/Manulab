@@ -1,7 +1,7 @@
 package me.kirillirik.manulab.main.table.manufactory;
 
 import imgui.type.ImString;
-import me.kirillirik.manulab.main.table.row.TableRow;
+import me.kirillirik.manulab.main.table.TableRow;
 
 public final class ManufactoryRow extends TableRow {
     private final int id;

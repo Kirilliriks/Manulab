@@ -8,7 +8,6 @@ import imgui.flag.ImGuiTableColumnFlags;
 import imgui.flag.ImGuiTableFlags;
 import me.kirillirik.database.Database;
 import me.kirillirik.manulab.main.TableType;
-import me.kirillirik.manulab.main.table.row.TableRow;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -73,7 +72,7 @@ public abstract class Table <T extends TableRow> {
             }
         }
 
-        Database.async().rs("select * from " + type.name().toLowerCase(), rs -> {
+        Database.async().rs("select * from \"" + type.name().toLowerCase() + "\"", rs -> {
             rows.clear();
 
             while (rs.next()) {

@@ -1,7 +1,7 @@
 package me.kirillirik.manulab.main.table.product;
 
 import imgui.type.ImString;
-import me.kirillirik.manulab.main.table.row.TableRow;
+import me.kirillirik.manulab.main.table.TableRow;
 
 public final class ProductRow extends TableRow {
 

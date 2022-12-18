@@ -2,7 +2,7 @@ package me.kirillirik.manulab.main.table.collector;
 
 import imgui.type.ImInt;
 import imgui.type.ImString;
-import me.kirillirik.manulab.main.table.row.TableRow;
+import me.kirillirik.manulab.main.table.TableRow;
 
 public final class CollectorRow extends TableRow {
 

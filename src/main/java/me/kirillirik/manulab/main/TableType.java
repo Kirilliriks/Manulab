@@ -7,6 +7,7 @@ import me.kirillirik.manulab.main.table.assembly.AssemblyTable;
 import me.kirillirik.manulab.main.table.collector.CollectorTable;
 import me.kirillirik.manulab.main.table.manufactory.ManufactoryTable;
 import me.kirillirik.manulab.main.table.product.ProductTable;
+import me.kirillirik.manulab.main.table.user.UserTable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +43,7 @@ public enum TableType {
             Role.COLLECTOR.addPermissions(Permission.VIEW)
     ),
     USER("Пользователи",
-            ManufactoryTable::new,
+            UserTable::new,
             Role.ADMIN.addPermissions(Permission.EDIT_ALL, Permission.VIEW)
     );
 

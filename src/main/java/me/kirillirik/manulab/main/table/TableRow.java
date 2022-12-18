@@ -1,4 +1,4 @@
-package me.kirillirik.manulab.main.table.row;
+package me.kirillirik.manulab.main.table;
 
 public abstract class TableRow {
 

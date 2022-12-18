@@ -2,7 +2,7 @@ package me.kirillirik.manulab.main.table.assembly;
 
 import imgui.type.ImInt;
 import imgui.type.ImString;
-import me.kirillirik.manulab.main.table.row.TableRow;
+import me.kirillirik.manulab.main.table.TableRow;
 
 public final class AssemblyRow extends TableRow {
 
@@ -18,6 +18,7 @@ public final class AssemblyRow extends TableRow {
         this.id = id;
         this.assemblyDate = new ImString();
         this.assemblyDate.set(assemblyDate);
+
         this.amount = new ImInt(amount);
         this.collectorID = new ImInt(collectorID);
         this.productID = new ImInt(productID);
