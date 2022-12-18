@@ -3,6 +3,7 @@ package me.kirillirik.manulab.main;
 import me.kirillirik.manulab.auth.Permission;
 import me.kirillirik.manulab.auth.Role;
 import me.kirillirik.manulab.main.table.Table;
+import me.kirillirik.manulab.main.table.assembly.AssemblyTable;
 import me.kirillirik.manulab.main.table.collector.CollectorTable;
 import me.kirillirik.manulab.main.table.manufactory.ManufactoryTable;
 import me.kirillirik.manulab.main.table.product.ProductTable;
@@ -27,7 +28,7 @@ public enum TableType {
             Role.COLLECTOR.addPermissions(Permission.VIEW)
     ),
     ASSEMBLY("Сборки",
-            ManufactoryTable::new,
+            AssemblyTable::new,
             Role.ADMIN.addPermissions(Permission.EDIT_ALL, Permission.VIEW),
             Role.DIRECTOR.addPermissions(Permission.EDIT_ALL, Permission.VIEW),
             Role.MANAGER.addPermissions(Permission.EDIT_ALL, Permission.VIEW),
