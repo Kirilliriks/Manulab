@@ -16,6 +16,10 @@ public final class Manulab {
         mainMenu = new MainMenu();
     }
 
+    public void tryLoadSession() {
+        auth.tryLoadSession();
+    }
+
     public void update() {
         switch (state) {
             case AUTH -> auth.update();

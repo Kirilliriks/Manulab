@@ -30,10 +30,16 @@ public final class Auth {
         state = State.AUTH;
     }
 
+    public void tryLoadSession() {
+        if (loadSession()) {
+            Manulab.setState(Manulab.State.MAIN_MANUL);
+        }
+    }
+
     public void update() {
         ImGui.begin(state.name + "###auth_window");
         if (info != null) {
-            ImGui.text(info);
+            ImGui.textColored(150, 0, 0, 255, info);
         }
         switch (state) {
             case AUTH -> auth();
@@ -43,11 +49,6 @@ public final class Auth {
     }
 
     private void auth() {
-        if (loadSession()) {
-            Manulab.setState(Manulab.State.MAIN_MANUL);
-            return;
-        }
-
         ImGui.text("Введите логин");
         ImGui.inputText("##Логин", login);
 
@@ -134,10 +135,16 @@ public final class Auth {
         try {
             final BufferedReader reader = new BufferedReader(new FileReader(file));
 
-            final Boolean result = Database.sync().rs("select * from \"user\" where login = ? and password = ?",
+            final Boolean verifiedPassword = Database.sync().rs("select * from \"user\" where login = ? and password = ?",
                     ResultSet::next, reader.readLine(), reader.readLine());
 
-            return result != null && result;
+            final boolean result = verifiedPassword != null && verifiedPassword;
+
+            if (!result) {
+                info = "Не удалось восстановить сессию!";
+            }
+
+            return result;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

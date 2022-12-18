@@ -90,6 +90,8 @@ public final class Window {
     }
 
     public void run() {
+
+        manulab.tryLoadSession();
         while (!glfwWindowShouldClose(window) && Manulab.getState() != Manulab.State.CLOSE) {
             glClearColor(0.1f, 0.09f, 0.1f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
