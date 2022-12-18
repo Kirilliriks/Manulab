@@ -40,8 +40,10 @@ public final class AsyncQuery {
             try {
                 return callable.call();
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
             }
+
+            return null;
         }, executor);
     }
 }
