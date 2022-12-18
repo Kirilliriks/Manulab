@@ -136,7 +136,7 @@ public final class Auth {
 
             final Boolean result = Database.sync().rs("select * from \"user\" where login = ? and password = ?",
                     ResultSet::next, reader.readLine(), reader.readLine());
-            
+
             return result != null && result;
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -167,7 +167,7 @@ public final class Auth {
                         throw new RuntimeException(e);
                     }
 
-                    return new User(login.get(), rs.getString("role"), rs.getInt("collector_id"));
+                    return new User(rs.getInt("id"), login.get(), rs.getString("role"), rs.getInt("collector_id"));
                 }
             }
 
@@ -200,6 +200,10 @@ public final class Auth {
     public static void logout() {
         user = null;
 
+        clearSession();
+    }
+
+    public static void clearSession() {
         final File file = new File("session.dat");
         if (file.exists()) {
             file.delete();

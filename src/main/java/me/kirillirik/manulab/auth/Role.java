@@ -34,10 +34,24 @@ public final class Role {
         return this;
     }
 
+    public static Role of(String name) {
+        return switch (name.toUpperCase()) {
+            case "ADMIN" -> ADMIN.get();
+            case "DIRECTOR" -> DIRECTOR.get();
+            case "MANAGER" -> MANAGER.get();
+            case "COLLECTOR" -> COLLECTOR.get();
+            default -> USER.get();
+        };
+    }
+
     public record RoleBuilder(String name) {
 
-        public Role addPermissions(Permission... permission) {
-                return new Role(name, permission);
-            }
+        public Role get() {
+            return new Role(name);
         }
+
+        public Role addPermissions(Permission... permission) {
+            return new Role(name, permission);
+        }
+    }
 }

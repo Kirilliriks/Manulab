@@ -1,30 +1,48 @@
 package me.kirillirik;
 
+import me.kirillirik.manulab.auth.Role;
+
 public final class User {
 
-    private final String login;
-    private final String role; // TODO
-    private final int collector;
+    private final int id;
 
-    public User(String login, String role) {
-        this(login, role, -1);
+    private String login;
+    private Role role;
+    private int collectorID;
+
+    public User(int id, String login, String role, int collectorID) {
+        this.id = id;
+
+        this.login = login;
+        this.role = Role.of(role);
+        this.collectorID = collectorID;
     }
 
-    public User(String login, String role, int collector) {
-        this.login = login;
-        this.role = role;
-        this.collector = collector;
+    public int getID() {
+        return id;
     }
 
     public String getLogin() {
         return login;
     }
 
-    public String getRole() {
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public Role getRole() {
         return role;
     }
 
-    public int getCollector() {
-        return collector;
+    public void setRole(String role) {
+        this.role = Role.of(role);
+    }
+
+    public int getCollectorID() {
+        return collectorID;
+    }
+
+    public void setCollectorID(int collectorID) {
+        this.collectorID = collectorID;
     }
 }

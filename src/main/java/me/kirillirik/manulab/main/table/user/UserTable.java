@@ -3,7 +3,9 @@ package me.kirillirik.manulab.main.table.user;
 import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.type.ImString;
+import me.kirillirik.User;
 import me.kirillirik.database.Database;
+import me.kirillirik.manulab.auth.Auth;
 import me.kirillirik.manulab.main.TableType;
 import me.kirillirik.manulab.main.table.Table;
 import me.kirillirik.util.PasswordUtil;
@@ -24,10 +26,21 @@ public final class UserTable extends Table<UserRow> {
 
     @Override
     protected UserRow getRow(ResultSet rs) throws SQLException {
-        return new UserRow(rs.getInt("id"),
-                           rs.getString("login"),
-                           rs.getString("role"),
-                           rs.getInt("collector_id"), false);
+        final UserRow row = new UserRow(rs.getInt("id"),
+                rs.getString("login"),
+                rs.getString("role"),
+                rs.getInt("collector_id"), false);
+
+        final User user = Auth.user();
+        if (row.getID() == user.getID()) {
+            user.setLogin(row.getLogin());
+            user.setRole(row.getRole());
+            user.setCollectorID(row.getCollectorID());
+
+            Auth.clearSession();
+        }
+
+        return row;
     }
 
     @Override
