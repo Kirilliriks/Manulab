@@ -1,31 +1,22 @@
 package me.kirillirik.manulab.main.table.manufactory;
 
-import imgui.type.ImInt;
 import imgui.type.ImString;
 import me.kirillirik.manulab.main.table.row.TableRow;
 
 public final class ManufactoryRow extends TableRow {
-    private final ImInt id;
-    private final String oldName;
+    private final int id;
     private final ImString name;
 
-    public ManufactoryRow(int id, String name) {
-        this.id = new ImInt(id);
-        this.oldName = name;
+    public ManufactoryRow(int id, String name, boolean newRow) {
+        super(newRow);
+
+        this.id = id;
         this.name = new ImString();
         this.name.set(name);
     }
 
-    public ImInt ID() {
-        return id;
-    }
-
     public int getID() {
-        return id.get();
-    }
-
-    public void setID(int id) {
-        this.id.set(id);
+        return id;
     }
 
     public ImString name() {
@@ -34,13 +25,5 @@ public final class ManufactoryRow extends TableRow {
 
     public String getName() {
         return name.get();
-    }
-
-    public void setName(String name) {
-        this.name.set(name);
-    }
-
-    public String getOldName() {
-        return oldName;
     }
 }

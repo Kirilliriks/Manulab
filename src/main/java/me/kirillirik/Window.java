@@ -23,12 +23,12 @@ public final class Window {
     private final ImGuiImplGlfw imGuiGlfw = new ImGuiImplGlfw();
     private final ImGuiImplGl3 imGuiGl3 = new ImGuiImplGl3();
 
-    private final Manulab imguiLayer;
+    private final Manulab manulab;
     private String glslVersion;
     private long window;
 
-    public Window(Manulab layer) {
-        imguiLayer = layer;
+    public Window() {
+        manulab = new Manulab();
         glslVersion = null;
     }
 
@@ -97,7 +97,7 @@ public final class Window {
             imGuiGlfw.newFrame();
             ImGui.newFrame();
 
-            imguiLayer.update();
+            manulab.update();
 
             ImGui.render();
             imGuiGl3.renderDrawData(ImGui.getDrawData());

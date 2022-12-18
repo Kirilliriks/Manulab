@@ -23,6 +23,10 @@ public final class AsyncQuery {
         return asCompletableFuture(() -> runner.update(sql, params));
     }
 
+    public <T> CompletableFuture<T> insert(@Language("SQL") String sql, ResultSetHandler<T> handler, Object... params) {
+        return asCompletableFuture(() -> runner.insert(sql, handler, params));
+    }
+
     public <T> CompletableFuture<T> rs(@Language("SQL") String sql, ResultSetHandler<T> handler) {
         return asCompletableFuture(() -> runner.query(sql, handler));
     }

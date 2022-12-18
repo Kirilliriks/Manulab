@@ -29,13 +29,16 @@ public abstract class Table <T extends TableRow> {
         this.rows = Collections.synchronizedList(new ArrayList<>());
     }
 
+    protected abstract T newRow();
     protected abstract T getRow(ResultSet resultSet) throws SQLException;
 
     protected abstract void initTableConfig();
 
     protected abstract void tableRow(T row);
 
-    protected abstract void saveRow(T row);
+    protected abstract void updateRow(T row);
+
+    protected abstract void insertRow(T row);
 
     public TableType getType() {
         return type;
@@ -56,7 +59,12 @@ public abstract class Table <T extends TableRow> {
                     continue;
                 }
 
-                saveRow(row);
+                if (row.isNewRow()) {
+                    insertRow(row);
+                    continue;
+                }
+
+                updateRow(row);
             }
         }
 
@@ -104,6 +112,12 @@ public abstract class Table <T extends TableRow> {
         ImGui.endTable();
 
         ImGui.endChild();
+
+        if (ImGui.button("Добавить строку")) {
+            rows.add(newRow());
+
+            dirty = true;
+        }
 
         if (ImGui.button("Обновить")) {
             refresh(false);
