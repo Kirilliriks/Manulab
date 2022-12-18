@@ -135,10 +135,17 @@ public final class Auth {
         try {
             final BufferedReader reader = new BufferedReader(new FileReader(file));
 
-            final Boolean verifiedPassword = Database.sync().rs("select * from \"user\" where login = ? and password = ?",
-                    ResultSet::next, reader.readLine(), reader.readLine());
+            final User loadesUser = Database.sync().rs("select id, login, role, collector_id from \"user\" where login = ? and password = ?",
+                    rs -> {
+                        if (rs.next()) {
+                            Auth.user = new User(rs.getInt("id"), rs.getString("login"), rs.getString("role"), rs.getInt("collector_id"));
+                            return Auth.user;
+                        }
 
-            final boolean result = verifiedPassword != null && verifiedPassword;
+                        return null;
+                    }, reader.readLine(), reader.readLine());
+
+            final boolean result = loadesUser != null;
 
             if (!result) {
                 info = "Не удалось восстановить сессию!";
@@ -184,7 +191,8 @@ public final class Auth {
     }
 
     private boolean checkIfHasLogin() {
-        return Database.sync().rs("select * from \"user\" where login = ?", ResultSet::next, login.get());
+        final Boolean result = Database.sync().rs("select id from \"user\" where login = ?", ResultSet::next, login.get());
+        return result != null && result;
     }
 
     private void registerNewUser() {

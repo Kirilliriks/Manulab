@@ -65,7 +65,10 @@ public final class MainMenu {
             ImGui.endMenu();
         }
 
+        ImGui.text("Вы авторизованы как " + Auth.user().getLogin());
+
         ImGui.endMainMenuBar();
+
 
         switch (state) {
             case VIEW_TABLE -> {
