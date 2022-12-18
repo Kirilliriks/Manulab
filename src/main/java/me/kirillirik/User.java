@@ -3,7 +3,7 @@ package me.kirillirik;
 public final class User {
 
     private final String login;
-    private final String role;
+    private final String role; // TODO
     private final int collector;
 
     public User(String login, String role) {

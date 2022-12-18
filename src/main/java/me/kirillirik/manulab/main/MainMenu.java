@@ -8,11 +8,16 @@ import imgui.type.ImBoolean;
 import me.kirillirik.Window;
 import me.kirillirik.manulab.Manulab;
 import me.kirillirik.manulab.auth.Auth;
+import me.kirillirik.manulab.main.table.Table;
 
 public final class MainMenu {
 
-    public MainMenu() {
+    private State state;
+    private Table<?> table;
 
+    public MainMenu() {
+        state = State.EMPTY;
+        table = null;
     }
 
     public void update() {
@@ -44,9 +49,36 @@ public final class MainMenu {
             ImGui.endMenu();
         }
 
+
+        if (ImGui.beginMenu("Выбрать таблицу")) {
+
+            for (final TableType type : TableType.values()) {
+                if (ImGui.menuItem(type.getName())) {
+                    table = type.getTable();
+
+                    table.refresh(false);
+
+                    state = State.VIEW_TABLE;
+                }
+            }
+
+            ImGui.endMenu();
+        }
+
         ImGui.endMainMenuBar();
 
+        switch (state) {
+            case VIEW_TABLE -> {
+                ImGui.text("Таблица " + table.getType().getName());
+                table.update();
+            }
+        }
 
         ImGui.end();
+    }
+
+    public enum State {
+        EMPTY,
+        VIEW_TABLE
     }
 }

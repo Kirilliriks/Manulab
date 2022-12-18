@@ -14,6 +14,14 @@ public final class SyncQuery {
         this.runner = runner;
     }
 
+    public int update(@Language("SQL") String sql, Object... params) {
+        try {
+            return runner.update(sql, params);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public <T> T insert(@Language("SQL") String sql, ResultSetHandler<T> handler, Object... params) {
         try {
             return runner.insert(sql, handler, params);

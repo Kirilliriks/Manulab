@@ -9,6 +9,7 @@ import me.kirillirik.manulab.Manulab;
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
+
 import org.lwjgl.opengl.GL;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -24,7 +25,7 @@ public final class Window {
 
     private final Manulab imguiLayer;
     private String glslVersion;
-    private long windowPtr;
+    private long window;
 
     public Window(Manulab layer) {
         imguiLayer = layer;
@@ -34,7 +35,7 @@ public final class Window {
     public void init() {
         initWindow();
         initImGui();
-        imGuiGlfw.init(windowPtr, true);
+        imGuiGlfw.init(window, true);
         imGuiGl3.init(glslVersion);
     }
 
@@ -42,8 +43,8 @@ public final class Window {
         imGuiGl3.dispose();
         imGuiGlfw.dispose();
         ImGui.destroyContext();
-        Callbacks.glfwFreeCallbacks(windowPtr);
-        glfwDestroyWindow(windowPtr);
+        Callbacks.glfwFreeCallbacks(window);
+        glfwDestroyWindow(window);
         glfwTerminate();
     }
 
@@ -67,16 +68,16 @@ public final class Window {
 
         width = 1920;
         height = 1080;
-        windowPtr = glfwCreateWindow(width, height, "Manul", NULL, NULL);
+        window = glfwCreateWindow(width, height, "Manul", NULL, NULL);
 
-        if (windowPtr == NULL) {
+        if (window == NULL) {
             System.out.println("Unable to create window");
             System.exit(-1);
         }
 
-        glfwMakeContextCurrent(windowPtr);
+        glfwMakeContextCurrent(window);
         glfwSwapInterval(1);
-        glfwShowWindow(windowPtr);
+        glfwShowWindow(window);
 
         GL.createCapabilities();
     }
@@ -89,7 +90,7 @@ public final class Window {
     }
 
     public void run() {
-        while (!glfwWindowShouldClose(windowPtr) && Manulab.getState() != Manulab.State.CLOSE) {
+        while (!glfwWindowShouldClose(window) && Manulab.getState() != Manulab.State.CLOSE) {
             glClearColor(0.1f, 0.09f, 0.1f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
@@ -108,7 +109,7 @@ public final class Window {
                 GLFW.glfwMakeContextCurrent(backupWindowPtr);
             }
 
-            GLFW.glfwSwapBuffers(windowPtr);
+            GLFW.glfwSwapBuffers(window);
             GLFW.glfwPollEvents();
         }
     }
