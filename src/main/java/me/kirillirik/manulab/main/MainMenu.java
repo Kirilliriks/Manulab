@@ -65,7 +65,7 @@ public final class MainMenu {
             ImGui.endMenu();
         }
 
-        ImGui.text("Вы авторизованы как " + Auth.user().getLogin());
+        ImGui.textColored(255, 69, 48, 200, "Вы авторизованы как " + Auth.user().getLogin());
 
         ImGui.endMainMenuBar();
 
