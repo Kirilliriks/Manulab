@@ -19,6 +19,7 @@ public abstract class Table <T extends TableRow> {
     private final int columnCount;
     private final TableType type;
     private final List<T> rows;
+    private boolean dirty;
 
     public Table(TableType type, int columnCount) {
         super();
@@ -40,8 +41,16 @@ public abstract class Table <T extends TableRow> {
         return type;
     }
 
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    public void dirty() {
+        dirty = true;
+    }
+
     public void refresh(boolean saveDirty) {
-        if (saveDirty) {
+        if (saveDirty && dirty) {
             for (final T row : rows) {
                 if (!row.isDirty()) {
                     continue;
@@ -51,7 +60,7 @@ public abstract class Table <T extends TableRow> {
             }
         }
 
-        Database.sync().rs("select * from " + type.name().toLowerCase(), rs -> {
+        Database.async().rs("select * from " + type.name().toLowerCase(), rs -> {
             rows.clear();
 
             while (rs.next()) {
@@ -61,6 +70,8 @@ public abstract class Table <T extends TableRow> {
 
             return null;
         });
+
+        dirty = false;
     }
 
     public void update() {

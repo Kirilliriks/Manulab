@@ -34,12 +34,14 @@ public final class ManufactoryTable extends Table<ManufactoryRow> {
     @Override
     protected void tableRow(ManufactoryRow row) {
         ImGui.tableSetColumnIndex(0);
-        ImGui.text(String.valueOf(row.getID()) + " " + row.isDirty());
+        ImGui.text(String.valueOf(row.getID()));
 
         ImGui.tableSetColumnIndex(1);
         ImGui.pushItemWidth(ImGui.getContentRegionAvailX());
         if (ImGui.inputText("##name",  row.name())) {
             row.dirty();
+
+            dirty();
         }
     }
 }

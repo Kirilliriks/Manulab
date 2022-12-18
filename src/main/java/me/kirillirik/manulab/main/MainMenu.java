@@ -69,7 +69,7 @@ public final class MainMenu {
 
         switch (state) {
             case VIEW_TABLE -> {
-                ImGui.text("Таблица " + table.getType().getName());
+                ImGui.text("Таблица " + table.getType().getName() + (table.isDirty() ? " - [Не сохранено]" : ""));
                 table.update();
             }
         }
