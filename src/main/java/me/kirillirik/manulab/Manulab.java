@@ -33,6 +33,7 @@ public final class Manulab {
 
     public enum State {
         AUTH,
-        MAIN_MANUL
+        MAIN_MANUL,
+        CLOSE
     }
 }

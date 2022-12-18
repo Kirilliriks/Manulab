@@ -8,6 +8,7 @@ import me.kirillirik.database.Database;
 import me.kirillirik.manulab.Manulab;
 import me.kirillirik.util.PasswordUtil;
 
+import java.io.*;
 import java.sql.ResultSet;
 
 public final class Auth {
@@ -42,6 +43,11 @@ public final class Auth {
     }
 
     private void auth() {
+        if (loadSession()) {
+            Manulab.setState(Manulab.State.MAIN_MANUL);
+            return;
+        }
+
         ImGui.text("Введите логин");
         ImGui.inputText("##Логин", login);
 
@@ -57,6 +63,8 @@ public final class Auth {
             user = loadUser();
 
             if (user != null) {
+                clearData();
+
                 Manulab.setState(Manulab.State.MAIN_MANUL);
             } else {
                 info = "Неверный логин или пароль!";
@@ -68,8 +76,7 @@ public final class Auth {
         if (ImGui.button("Регистрация")) {
             state = State.REGISTER;
 
-            login.clear();
-            password.clear();
+            clearData();
             info = null;
         }
     }
@@ -97,12 +104,10 @@ public final class Auth {
             } else {
                 registerNewUser();
 
-                info = "Вы успешно зарегистрировались!";
                 state = State.AUTH;
+                info = "Вы успешно зарегистрировались!";
 
-                login.clear();
-                password.clear();
-                passwordAgain.clear();
+                clearData();
             }
         }
 
@@ -113,21 +118,52 @@ public final class Auth {
 
         ImGui.sameLine();
         if (ImGui.button("Вернуться к авторизации")) {
-            state = State.AUTH;
+            clearData();
 
-            login.clear();
-            password.clear();
-            passwordAgain.clear();
+            state = State.AUTH;
             info = null;
         }
     }
+
+    private boolean loadSession() {
+        final File file = new File("session.dat");
+        if (!file.exists()) {
+            return false;
+        }
+
+        try {
+            final BufferedReader reader = new BufferedReader(new FileReader(file));
+            return Database.sync().rs("select * from \"user\" where login = ? and password = ?",
+                    ResultSet::next, reader.readLine(), reader.readLine());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 
     private User loadUser() {
         return Database.sync().rs("select * from \"user\" where login = ?", rs -> {
             while (rs.next()) {
                 final String hashedPassword = PasswordUtil.hashPassword(password.get(), rs.getString("salt"));
+
                 if (hashedPassword.equals(rs.getString("password"))) {
+
+                    try {
+                        final File file = new File("session.dat");
+                        file.createNewFile();
+
+                        final BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+                        writer.write(login.get());
+                        writer.newLine();
+                        writer.write(hashedPassword);
+
+                        writer.close();
+
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+
                     return new User(login.get(), rs.getString("role"), rs.getInt("collector_id"));
                 }
             }
@@ -148,8 +184,23 @@ public final class Auth {
                 rs -> null, login.get(), hash, salt, "user");
     }
 
+    private void clearData() {
+        login.clear();
+        password.clear();
+        passwordAgain.clear();
+    }
+
     public static User user() {
         return user;
+    }
+
+    public static void logout() {
+        user = null;
+
+        final File file = new File("session.dat");
+        if (file.exists()) {
+            file.delete();
+        }
     }
 
     public enum State {
@@ -157,6 +208,7 @@ public final class Auth {
         REGISTER("Регистрация");
 
         private final String name;
+
         State(String name) {
             this.name = name;
         }

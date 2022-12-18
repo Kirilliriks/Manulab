@@ -6,6 +6,7 @@ import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
 import me.kirillirik.Window;
+import me.kirillirik.manulab.Manulab;
 import me.kirillirik.manulab.auth.Auth;
 
 public final class MainMenu {
@@ -25,7 +26,26 @@ public final class MainMenu {
 
         ImGui.begin("###main_menu", new ImBoolean(true), windowFlags);
         ImGui.popStyleVar(2);
-        ImGui.text("Вы вошли как " + Auth.user().getLogin() + "!");
+
+
+        ImGui.beginMainMenuBar();
+
+        if (ImGui.beginMenu("Меню")) {
+
+            if (ImGui.menuItem("Выход из аккаунта")) {
+                Manulab.setState(Manulab.State.AUTH);
+                Auth.logout();
+            }
+
+            if (ImGui.menuItem("Закрыть программу")) {
+                Manulab.setState(Manulab.State.CLOSE);
+            }
+
+            ImGui.endMenu();
+        }
+
+        ImGui.endMainMenuBar();
+
 
         ImGui.end();
     }

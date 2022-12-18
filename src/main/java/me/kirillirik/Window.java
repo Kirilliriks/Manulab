@@ -62,6 +62,7 @@ public final class Window {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
+        glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
         width = 1920;
@@ -88,7 +89,7 @@ public final class Window {
     }
 
     public void run() {
-        while (!glfwWindowShouldClose(windowPtr)) {
+        while (!glfwWindowShouldClose(windowPtr) && Manulab.getState() != Manulab.State.CLOSE) {
             glClearColor(0.1f, 0.09f, 0.1f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
