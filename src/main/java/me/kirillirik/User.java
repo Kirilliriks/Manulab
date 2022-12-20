@@ -9,6 +9,7 @@ public final class User {
     private String login;
     private Role role;
     private int collectorID;
+    private boolean needUpdate;
 
     public User(int id, String login, String role, int collectorID) {
         this.id = id;
@@ -16,6 +17,7 @@ public final class User {
         this.login = login;
         this.role = Role.of(role);
         this.collectorID = collectorID;
+        this.needUpdate = false;
     }
 
     public int getID() {
@@ -44,5 +46,13 @@ public final class User {
 
     public void setCollectorID(int collectorID) {
         this.collectorID = collectorID;
+    }
+
+    public boolean isNeedUpdate() {
+        return needUpdate;
+    }
+
+    public void setNeedUpdate(boolean needUpdate) {
+        this.needUpdate = needUpdate;
     }
 }

@@ -17,20 +17,13 @@ import java.sql.SQLException;
 
 public final class UserTable extends Table<UserRow> {
 
-    private final String[] roles;
-
     public UserTable() {
         super(TableType.USER, 5);
-
-        roles = new String[Role.VALUES.size()];
-        for (int i = 0; i < roles.length; i++) {
-            roles[i] = Role.VALUES.get(i).name();
-        }
     }
 
     @Override
     protected UserRow newRow() {
-        return new UserRow(-1, "Введите логин", "Введите роль", -1, true);
+        return new UserRow(-1, "Введите логин", "Выберите роль", -1, true);
     }
 
     @Override
@@ -41,13 +34,15 @@ public final class UserTable extends Table<UserRow> {
                 rs.getInt("collector_id"), false);
 
         final User user = Auth.user();
-        if (dirty && row.getID() == user.getID()) {
+        if (user.isNeedUpdate() && row.getID() == user.getID()) {
             user.setLogin(row.getLogin());
             user.setRole(row.getRole());
             user.setCollectorID(row.getCollectorID());
 
             Auth.clearSession();
             Editor.setState(Editor.State.EMPTY);
+
+            user.setNeedUpdate(false);
         }
 
         return row;
@@ -127,6 +122,10 @@ public final class UserTable extends Table<UserRow> {
             row.dirty();
 
             dirty();
+        }
+
+        if (row.isDirty() && row.getID() == Auth.user().getID()) {
+            Auth.user().setNeedUpdate(true);
         }
     }
 
