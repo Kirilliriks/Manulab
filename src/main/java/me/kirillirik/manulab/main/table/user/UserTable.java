@@ -6,6 +6,8 @@ import imgui.type.ImString;
 import me.kirillirik.User;
 import me.kirillirik.database.Database;
 import me.kirillirik.manulab.auth.Auth;
+import me.kirillirik.manulab.auth.Role;
+import me.kirillirik.manulab.main.Editor;
 import me.kirillirik.manulab.main.TableType;
 import me.kirillirik.manulab.main.table.Table;
 import me.kirillirik.util.PasswordUtil;
@@ -15,8 +17,15 @@ import java.sql.SQLException;
 
 public final class UserTable extends Table<UserRow> {
 
+    private final String[] roles;
+
     public UserTable() {
         super(TableType.USER, 5);
+
+        roles = new String[Role.VALUES.size()];
+        for (int i = 0; i < roles.length; i++) {
+            roles[i] = Role.VALUES.get(i).name();
+        }
     }
 
     @Override
@@ -32,12 +41,13 @@ public final class UserTable extends Table<UserRow> {
                 rs.getInt("collector_id"), false);
 
         final User user = Auth.user();
-        if (row.getID() == user.getID()) {
+        if (dirty && row.getID() == user.getID()) {
             user.setLogin(row.getLogin());
             user.setRole(row.getRole());
             user.setCollectorID(row.getCollectorID());
 
             Auth.clearSession();
+            Editor.setState(Editor.State.EMPTY);
         }
 
         return row;
@@ -79,6 +89,7 @@ public final class UserTable extends Table<UserRow> {
             row.newSalt().set(PasswordUtil.generateSalt());
             row.newPassword().set(PasswordUtil.hashPassword(newPassword.get(), row.newSalt().toString()));
 
+            row.needUpdatePassword();
             row.dirty();
 
             dirty();
@@ -86,10 +97,24 @@ public final class UserTable extends Table<UserRow> {
 
         ImGui.tableSetColumnIndex(4);
         ImGui.pushItemWidth(ImGui.getContentRegionAvailX());
-        if (ImGui.inputText("##role",  row.role())) {
-            row.dirty();
 
-            dirty();
+        final String userRole = row.getRole().toUpperCase();
+        if (ImGui.beginCombo("##role", userRole)) {
+            for (final var type : Role.VALUES) {
+                if (userRole.equals(type.name())) {
+                    continue;
+                }
+
+                if (ImGui.selectable(type.name())) {
+                    row.role().set(type.name());
+
+                    row.dirty();
+
+                    dirty();
+                }
+            }
+
+            ImGui.endCombo();
         }
 
         ImGui.tableSetColumnIndex(5);
@@ -103,12 +128,28 @@ public final class UserTable extends Table<UserRow> {
 
     @Override
     protected void updateRow(UserRow row) {
-        Database.sync().update("update \"user\" set login = ?, password = ?, salt = ?, role = ?, collector_id = ? where id = ?",
-                row.getLogin(), row.getNewPassword(), row.getNewSalt(), row.getRole(), row.getCollectorID(), row.getID());
+        if (row.isNeedUpdatePassword()) {
+            if (row.getNewPassword().isEmpty() || row.getNewSalt().isEmpty()) {
+                //TODO maybe give error?
+                return;
+            }
+
+            Database.sync().update("update \"user\" set login = ?, password = ?, salt = ?, role = ?, collector_id = ? where id = ?",
+                    row.getLogin(), row.getNewPassword(), row.getNewSalt(), row.getRole(), row.getCollectorID(), row.getID());
+            return;
+        }
+
+        Database.sync().update("update \"user\" set login = ?, role = ?, collector_id = ? where id = ?",
+                row.getLogin(), row.getRole(), row.getCollectorID(), row.getID());
     }
 
     @Override
     protected void insertRow(UserRow row) {
+        if (row.getNewPassword().isEmpty() || row.getNewSalt().isEmpty()) {
+            //TODO maybe give error?
+            return;
+        }
+
         Database.sync().update("insert into \"user\"(login, password, salt, role, collector_id) values(?, ?, ?, ?, ?)",
                 row.getLogin(), row.getNewPassword(), row.getNewSalt(), row.getRole(), row.getCollectorID());
     }

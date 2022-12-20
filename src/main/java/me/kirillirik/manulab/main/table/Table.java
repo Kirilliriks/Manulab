@@ -84,10 +84,9 @@ public abstract class Table <T extends TableRow> {
                 rows.add(row);
             }
 
+            dirty = false;
             return null;
         });
-
-        dirty = false;
     }
 
     public void update() {

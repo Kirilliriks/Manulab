@@ -5,17 +5,19 @@ import imgui.flag.ImGuiCond;
 import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
+import me.kirillirik.User;
 import me.kirillirik.Window;
 import me.kirillirik.manulab.Manulab;
 import me.kirillirik.manulab.auth.Auth;
+import me.kirillirik.manulab.auth.Role;
 import me.kirillirik.manulab.main.table.Table;
 
-public final class MainMenu {
+public final class Editor {
 
-    private State state;
+    private static State state;
     private Table<?> table;
 
-    public MainMenu() {
+    public Editor() {
         state = State.EMPTY;
         table = null;
     }
@@ -38,8 +40,8 @@ public final class MainMenu {
         if (ImGui.beginMenu("Меню")) {
 
             if (ImGui.menuItem("Выход из аккаунта")) {
-                Manulab.setState(Manulab.State.AUTH);
                 Auth.logout();
+                Manulab.setState(Manulab.State.AUTH);
             }
 
             if (ImGui.menuItem("Закрыть программу")) {
@@ -52,7 +54,14 @@ public final class MainMenu {
 
         if (ImGui.beginMenu("Выбрать таблицу")) {
 
+            final User user = Auth.user();
             for (final TableType type : TableType.values()) {
+
+                final Role role = type.getRole(user.getRole().getName());
+                if (role == null) {
+                    continue;
+                }
+
                 if (ImGui.menuItem(type.getName())) {
                     table = type.getTable();
 
@@ -65,12 +74,14 @@ public final class MainMenu {
             ImGui.endMenu();
         }
 
-        ImGui.textColored(255, 69, 48, 200, "Вы авторизованы как " + Auth.user().getLogin());
+        if (Auth.user() != null) {
+            ImGui.textColored(255, 69, 48, 180, "Пользователь " + Auth.user().getLogin() + " авторизован как " + Auth.user().getRole().getName());
+        }
 
         ImGui.endMainMenuBar();
 
-
         switch (state) {
+            case EMPTY -> { }
             case VIEW_TABLE -> {
                 ImGui.text("Таблица " + table.getType().getName() + (table.isDirty() ? " - [Не сохранено]" : ""));
                 table.update();
@@ -78,6 +89,10 @@ public final class MainMenu {
         }
 
         ImGui.end();
+    }
+
+    public static void setState(State state) {
+        Editor.state = state;
     }
 
     public enum State {

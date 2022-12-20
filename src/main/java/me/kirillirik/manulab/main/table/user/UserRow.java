@@ -12,6 +12,7 @@ public final class UserRow extends TableRow {
     private final ImString newSalt;
     private final ImString role;
     private final ImInt collectorID;
+    private boolean needUpdatePassword;
 
     public UserRow(int id, String login, String role, int collectorID, boolean newRow) {
         super(newRow);
@@ -21,14 +22,14 @@ public final class UserRow extends TableRow {
         this.login.set(login);
 
         this.newPassword = new ImString();
-        this.newPassword.set("Введите новый пароль");
-
         this.newSalt = new ImString();
 
         this.role = new ImString();
         this.role.set(role);
 
         this.collectorID = new ImInt(collectorID);
+
+        this.needUpdatePassword = false;
     }
 
     public int getID() {
@@ -73,5 +74,13 @@ public final class UserRow extends TableRow {
 
     public int getCollectorID() {
         return collectorID.get();
+    }
+
+    public boolean isNeedUpdatePassword() {
+        return needUpdatePassword;
+    }
+
+    public void needUpdatePassword() {
+        needUpdatePassword = true;
     }
 }

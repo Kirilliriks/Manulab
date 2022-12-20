@@ -1,19 +1,19 @@
 package me.kirillirik.manulab;
 
 import me.kirillirik.manulab.auth.Auth;
-import me.kirillirik.manulab.main.MainMenu;
+import me.kirillirik.manulab.main.Editor;
 
 public final class Manulab {
 
     private static State state;
     private final Auth auth;
-    private final MainMenu mainMenu;
+    private final Editor editor;
 
     public Manulab() {
         state = State.AUTH;
 
         auth = new Auth();
-        mainMenu = new MainMenu();
+        editor = new Editor();
     }
 
     public void tryLoadSession() {
@@ -23,7 +23,7 @@ public final class Manulab {
     public void update() {
         switch (state) {
             case AUTH -> auth.update();
-            case MAIN_MANUL -> mainMenu.update();
+            case MAIN_MANUL -> editor.update();
         }
     }
 

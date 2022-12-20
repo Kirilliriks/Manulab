@@ -69,7 +69,11 @@ public enum TableType {
         return table.get();
     }
 
-    public Role getRole(Role.RoleBuilder role) {
+    public Role getRole(String role) {
+        return roles.get(role);
+    }
+
+    public Role getRole(Role.Type role) {
         return roles.get(role.name());
     }
 }
