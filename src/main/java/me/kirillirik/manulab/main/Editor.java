@@ -22,8 +22,6 @@ public final class Editor {
         table = null;
     }
 
-    float[] color = new float[3];
-
     public void update() {
         ImGui.setNextWindowPos(0.0f, 0.0f, ImGuiCond.Always);
         ImGui.setNextWindowSize(Window.getWidth(), Window.getHeight());
