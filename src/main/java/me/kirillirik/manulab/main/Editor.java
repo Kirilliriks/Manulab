@@ -52,30 +52,15 @@ public final class Editor {
         }
 
 
-        if (ImGui.beginMenu("Выбрать таблицу")) {
+        final User user = Auth.user();
+        if (user != null) {
+            if (!user.getRole().getTypeName().equalsIgnoreCase("user")) {
+                selectTablesFor(user);
 
-            final User user = Auth.user();
-            for (final TableType type : TableType.values()) {
-
-                final Role role = type.getRole(user.getRole().getName());
-                if (role == null) {
-                    continue;
-                }
-
-                if (ImGui.menuItem(type.getName())) {
-                    table = type.getTable();
-
-                    table.refresh(false);
-
-                    state = State.VIEW_TABLE;
-                }
+                ImGui.textColored(255, 69, 48, 180, "Пользователь " + Auth.user().getLogin() + " авторизован как " + Auth.user().getRole().getTypeName());
+            } else {
+                ImGui.textColored(255, 69, 48, 180, "Попросите администратора выдать вам необходимый доступ");
             }
-
-            ImGui.endMenu();
-        }
-
-        if (Auth.user() != null) {
-            ImGui.textColored(255, 69, 48, 180, "Пользователь " + Auth.user().getLogin() + " авторизован как " + Auth.user().getRole().getName());
         }
 
         ImGui.endMainMenuBar();
@@ -89,6 +74,26 @@ public final class Editor {
         }
 
         ImGui.end();
+    }
+
+    private void selectTablesFor(User user) {
+        if (ImGui.beginMenu("Выбрать таблицу")) {
+            for (final TableType type : TableType.values()) {
+                final Role role = type.getRole(user.getRole().getTypeName());
+                if (role == null) {
+                    continue;
+                }
+
+                if (ImGui.menuItem(type.getName())) {
+                    table = type.getTable();
+                    table.refresh(false);
+
+                    state = State.VIEW_TABLE;
+                }
+            }
+
+            ImGui.endMenu();
+        }
     }
 
     public static void setState(State state) {

@@ -57,7 +57,7 @@ public enum TableType {
         this.roles = new HashMap<>();
 
         for (final Role role : roles) {
-            this.roles.put(role.getName(), role);
+            this.roles.put(role.getTypeName(), role);
         }
     }
 

@@ -1,6 +1,5 @@
 package me.kirillirik.manulab.auth;
 
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -16,17 +15,16 @@ public final class Role {
     public static final Type COLLECTOR = new Type("COLLECTOR");
     public static final Type USER = new Type("USER");
 
-
-    private final String name;
+    private final String type;
     private final Set<Permission> permissions;
 
     private Role(String name, Permission... permissions) {
-        this.name = name;
+        this.type = name;
         this.permissions = new HashSet<>(Set.of(permissions));
     }
 
-    public String getName() {
-        return name;
+    public String getTypeName() {
+        return type;
     }
 
     public Set<Permission> getPermissions() {
@@ -50,18 +48,18 @@ public final class Role {
 
     public record Type(String name) {
 
-            public Type(String name) {
-                this.name = name;
+        public Type(String name) {
+            this.name = name;
 
-                VALUES.add(this);
-            }
-
-            public Role get() {
-                return new Role(name);
-            }
-
-            public Role addPermissions(Permission... permission) {
-                return new Role(name, permission);
-            }
+            VALUES.add(this);
         }
+
+        public Role get() {
+            return new Role(name);
+        }
+
+        public Role addPermissions(Permission... permission) {
+            return new Role(name, permission);
+        }
+    }
 }
