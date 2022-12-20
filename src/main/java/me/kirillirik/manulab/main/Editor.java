@@ -14,7 +14,6 @@ import me.kirillirik.texture.Texture;
 public final class Editor {
 
     private static State state;
-    private static Texture texture;
     private Table<?> table;
 
     public Editor() {
@@ -70,17 +69,12 @@ public final class Editor {
 
         ImGui.endMainMenuBar();
 
-        ImGui.getWindowDrawList().addImage(texture.getId(),
-                ImGui.getWindowContentRegionMaxX() / 2 - texture.getWidth() / 2f, ImGui.getWindowContentRegionMaxY() / 2 - texture.getHeight() / 2f,
-                ImGui.getWindowContentRegionMaxX() / 2 + texture.getWidth() / 2f, ImGui.getWindowContentRegionMaxY() / 2 + texture.getHeight() / 2f,
-                0, 0, 1, 1);
+        Manulab.drawLogo();
 
         if (user != null) {
             switch (state) {
                 case EMPTY -> { }
-                case VIEW_TABLE -> {
-                    table.update(user.getRole());
-                }
+                case VIEW_TABLE -> table.update(user.getRole());
             }
         }
 
@@ -105,10 +99,6 @@ public final class Editor {
 
             ImGui.endMenu();
         }
-    }
-
-    public static void loadTexture() {
-        Editor.texture = Texture.create("Manulab.png");
     }
 
     public static void setState(State state) {

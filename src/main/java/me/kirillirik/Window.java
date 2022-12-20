@@ -93,7 +93,7 @@ public final class Window {
     public void run() {
 
         try {
-            Editor.loadTexture();
+            Manulab.loadTexture();
         } catch (Throwable e) {
             e.printStackTrace();
         }

@@ -37,6 +37,8 @@ public final class Auth {
     }
 
     public void update() {
+        Manulab.drawLogo2();
+
         ImGui.begin(state.name + "###auth_window");
         if (info != null) {
             ImGui.textColored(150, 0, 0, 255, info);

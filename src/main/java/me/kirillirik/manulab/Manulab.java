@@ -1,11 +1,14 @@
 package me.kirillirik.manulab;
 
+import imgui.ImGui;
 import me.kirillirik.manulab.auth.Auth;
 import me.kirillirik.manulab.main.Editor;
+import me.kirillirik.texture.Texture;
 
 public final class Manulab {
 
     private static State state;
+    private static Texture texture;
     private final Auth auth;
     private final Editor editor;
 
@@ -37,6 +40,24 @@ public final class Manulab {
 
     public static State getState() {
         return state;
+    }
+
+    public static void drawLogo() {
+        ImGui.getWindowDrawList().addImage(texture.getId(),
+                ImGui.getWindowContentRegionMaxX() / 2 - texture.getWidth() / 2f, ImGui.getWindowContentRegionMaxY() / 2 - texture.getHeight() / 2f,
+                ImGui.getWindowContentRegionMaxX() / 2 + texture.getWidth() / 2f, ImGui.getWindowContentRegionMaxY() / 2 + texture.getHeight() / 2f,
+                0, 0, 1, 1);
+    }
+
+    public static void drawLogo2() {
+        ImGui.getBackgroundDrawList().addImage(texture.getId(),
+                ImGui.getWindowWidth() / 2 - texture.getWidth() / 2f, ImGui.getWindowHeight() / 2 - texture.getHeight() / 2f,
+                ImGui.getWindowWidth() / 2 + texture.getWidth() / 2f, ImGui.getWindowHeight() / 2 + texture.getHeight() / 2f,
+                0, 0, 1, 1);
+    }
+
+    public static void loadTexture() {
+        Manulab.texture = Texture.create("Manulab.png");
     }
 
     public enum State {
