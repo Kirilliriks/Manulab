@@ -41,6 +41,10 @@ public final class Editor {
 
             if (ImGui.menuItem("Выход из аккаунта")) {
                 Auth.logout();
+
+                table = null;
+                state = State.EMPTY;
+
                 Manulab.setState(Manulab.State.AUTH);
             }
 
@@ -66,17 +70,17 @@ public final class Editor {
 
         ImGui.endMainMenuBar();
 
-        ImGui.setCursorScreenPos(0, 0);
         ImGui.getWindowDrawList().addImage(texture.getId(),
                 ImGui.getWindowContentRegionMaxX() / 2 - texture.getWidth() / 2f, ImGui.getWindowContentRegionMaxY() / 2 - texture.getHeight() / 2f,
                 ImGui.getWindowContentRegionMaxX() / 2 + texture.getWidth() / 2f, ImGui.getWindowContentRegionMaxY() / 2 + texture.getHeight() / 2f,
                 0, 0, 1, 1);
 
-        switch (state) {
-            case EMPTY -> { }
-            case VIEW_TABLE -> {
-                ImGui.text("Таблица " + table.getType().getName() + (table.isDirty() ? " - [Не сохранено]" : ""));
-                table.update();
+        if (user != null) {
+            switch (state) {
+                case EMPTY -> { }
+                case VIEW_TABLE -> {
+                    table.update(user.getRole());
+                }
             }
         }
 

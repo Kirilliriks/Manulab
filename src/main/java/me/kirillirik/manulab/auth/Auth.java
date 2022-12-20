@@ -157,8 +157,6 @@ public final class Auth {
         }
     }
 
-
-
     private User loadUser() {
         return Database.sync().rs("select * from \"user\" where login = ?", rs -> {
             while (rs.next()) {
@@ -220,8 +218,8 @@ public final class Auth {
 
     public static void clearSession() {
         final File file = new File("session.dat");
-        if (file.exists()) {
-            file.delete();
+        if (!file.delete()) {
+            System.out.println("SULA");
         }
     }
 

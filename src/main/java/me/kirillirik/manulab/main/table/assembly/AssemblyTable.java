@@ -1,6 +1,7 @@
 package me.kirillirik.manulab.main.table.assembly;
 
 import imgui.ImGui;
+import imgui.flag.ImGuiInputTextFlags;
 import me.kirillirik.database.Database;
 import me.kirillirik.manulab.main.TableType;
 import me.kirillirik.manulab.main.table.Table;
@@ -44,13 +45,13 @@ public final class AssemblyTable extends Table<AssemblyRow> {
     }
 
     @Override
-    protected void addRow(int index, AssemblyRow row) {
+    protected void addRow(int index, boolean canEdit, AssemblyRow row) {
         ImGui.tableSetColumnIndex(1);
         ImGui.text(String.valueOf(row.getID()));
 
         ImGui.tableSetColumnIndex(2);
         ImGui.pushItemWidth(ImGui.getContentRegionAvailX());
-        if (ImGui.inputText("##assembly_date",  row.assemblyDate())) {
+        if (ImGui.inputText("##assembly_date",  row.assemblyDate(), canEdit ? ImGuiInputTextFlags.None : ImGuiInputTextFlags.ReadOnly)) {
             row.dirty();
 
             dirty();
@@ -58,7 +59,7 @@ public final class AssemblyTable extends Table<AssemblyRow> {
 
         ImGui.tableSetColumnIndex(3);
         ImGui.pushItemWidth(ImGui.getContentRegionAvailX());
-        if (ImGui.inputInt("##amount",  row.amount())) {
+        if (ImGui.inputInt("##amount",  row.amount(), canEdit ? ImGuiInputTextFlags.None : ImGuiInputTextFlags.ReadOnly)) {
             row.dirty();
 
             dirty();
@@ -66,7 +67,7 @@ public final class AssemblyTable extends Table<AssemblyRow> {
 
         ImGui.tableSetColumnIndex(4);
         ImGui.pushItemWidth(ImGui.getContentRegionAvailX());
-        if (ImGui.inputInt("##collector_id",  row.collectorID())) {
+        if (ImGui.inputInt("##collector_id",  row.collectorID(), canEdit ? ImGuiInputTextFlags.None : ImGuiInputTextFlags.ReadOnly)) {
             row.dirty();
 
             dirty();
@@ -74,7 +75,7 @@ public final class AssemblyTable extends Table<AssemblyRow> {
 
         ImGui.tableSetColumnIndex(5);
         ImGui.pushItemWidth(ImGui.getContentRegionAvailX());
-        if (ImGui.inputInt("##product_id",  row.productID())) {
+        if (ImGui.inputInt("##product_id",  row.productID(), canEdit ? ImGuiInputTextFlags.None : ImGuiInputTextFlags.ReadOnly)) {
             row.dirty();
 
             dirty();

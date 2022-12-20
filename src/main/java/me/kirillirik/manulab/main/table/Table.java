@@ -7,6 +7,8 @@ import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiTableColumnFlags;
 import imgui.flag.ImGuiTableFlags;
 import me.kirillirik.database.Database;
+import me.kirillirik.manulab.auth.Permission;
+import me.kirillirik.manulab.auth.Role;
 import me.kirillirik.manulab.main.TableType;
 
 import java.sql.ResultSet;
@@ -36,7 +38,7 @@ public abstract class Table <T extends TableRow> {
 
     protected abstract void initTableConfig();
 
-    protected abstract void addRow(int index, T row);
+    protected abstract void addRow(int index, boolean canEdit, T row);
 
     protected abstract void updateRow(T row);
 
@@ -89,10 +91,16 @@ public abstract class Table <T extends TableRow> {
         });
     }
 
-    public void update() {
+    public void update(Role role) {
+        final Role equivalentRole =  type.getRole(role.getTypeName());
+        final boolean canEdit = equivalentRole.getPermissions().contains(Permission.EDIT_ALL);
+
         final int flags = ImGuiTableFlags.Resizable | ImGuiTableFlags.Reorderable | ImGuiTableFlags.Hideable |
                           ImGuiTableFlags.Sortable | ImGuiTableFlags.SortMulti |
                           ImGuiTableFlags.RowBg | ImGuiTableFlags.Borders | ImGuiTableFlags.NoBordersInBody | ImGuiTableFlags.ScrollY;
+
+        final String infoString = canEdit ? (dirty ? " - [Не сохранено]" : "") : " - [Только просмотр]";
+        ImGui.text("Таблица " + type.getName() + infoString);
 
         ImGui.beginChild(type.getName() + "_child", ImGui.getContentRegionAvailX(), ImGui.getContentRegionAvailY() * 0.8f, false);
 
@@ -125,7 +133,7 @@ public abstract class Table <T extends TableRow> {
                 }
                 ImGui.popStyleVar();
 
-                if (ImGui.beginPopupContextItem()) {
+                if (canEdit && ImGui.beginPopupContextItem()) {
                     if (ImGui.selectable("Добавить строку")) {
                         addNewRow();
                     }
@@ -153,7 +161,7 @@ public abstract class Table <T extends TableRow> {
                     ImGui.endPopup();
                 }
 
-                addRow(index, row);
+                addRow(index, canEdit, row);
 
                 ImGui.popID();
             }
@@ -163,22 +171,26 @@ public abstract class Table <T extends TableRow> {
 
         ImGui.endChild();
 
-        if (ImGui.button("Добавить строку")) {
-            addNewRow();
-        }
+        if (canEdit) {
+            if (ImGui.button("Добавить строку")) {
+                addNewRow();
+            }
 
-        ImGui.sameLine();
-        if (ImGui.button("Удалить выбранные строки")) {
-            removeSelectedRows();
+            ImGui.sameLine();
+            if (ImGui.button("Удалить выбранные строки")) {
+                removeSelectedRows();
+            }
         }
 
         if (ImGui.button("Обновить")) {
             refresh(false);
         }
 
-        ImGui.sameLine();
-        if (ImGui.button("Сохранить")) {
-            refresh(true);
+        if (canEdit) {
+            ImGui.sameLine();
+            if (ImGui.button("Сохранить")) {
+                refresh(true);
+            }
         }
     }
 

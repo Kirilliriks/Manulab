@@ -29,6 +29,10 @@ public final class Manulab {
 
     public static void setState(State state) {
         Manulab.state = state;
+
+        switch (state) {
+            case MAIN_MANUL -> Editor.setState(Editor.State.EMPTY);
+        }
     }
 
     public static State getState() {

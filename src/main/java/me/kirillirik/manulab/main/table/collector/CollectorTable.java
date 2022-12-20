@@ -1,6 +1,7 @@
 package me.kirillirik.manulab.main.table.collector;
 
 import imgui.ImGui;
+import imgui.flag.ImGuiInputTextFlags;
 import me.kirillirik.database.Database;
 import me.kirillirik.manulab.main.TableType;
 import me.kirillirik.manulab.main.table.Table;
@@ -41,13 +42,13 @@ public final class CollectorTable extends Table<CollectorRow> {
     }
 
     @Override
-    protected void addRow(int index, CollectorRow row) {
+    protected void addRow(int index, boolean canEdit, CollectorRow row) {
         ImGui.tableSetColumnIndex(1);
         ImGui.text(String.valueOf(row.getID()));
 
         ImGui.tableSetColumnIndex(2);
         ImGui.pushItemWidth(ImGui.getContentRegionAvailX());
-        if (ImGui.inputText("##second_name",  row.secondName())) {
+        if (ImGui.inputText("##second_name",  row.secondName(), canEdit ? ImGuiInputTextFlags.None : ImGuiInputTextFlags.ReadOnly)) {
             row.dirty();
 
             dirty();
@@ -55,7 +56,7 @@ public final class CollectorTable extends Table<CollectorRow> {
 
         ImGui.tableSetColumnIndex(3);
         ImGui.pushItemWidth(ImGui.getContentRegionAvailX());
-        if (ImGui.inputText("##first_name",  row.firstName())) {
+        if (ImGui.inputText("##first_name",  row.firstName(), canEdit ? ImGuiInputTextFlags.None : ImGuiInputTextFlags.ReadOnly)) {
             row.dirty();
 
             dirty();
@@ -63,7 +64,7 @@ public final class CollectorTable extends Table<CollectorRow> {
 
         ImGui.tableSetColumnIndex(4);
         ImGui.pushItemWidth(ImGui.getContentRegionAvailX());
-        if (ImGui.inputInt("##manufactory_id",  row.manufactoryID())) {
+        if (ImGui.inputInt("##manufactory_id",  row.manufactoryID(), canEdit ? ImGuiInputTextFlags.None : ImGuiInputTextFlags.ReadOnly)) {
             row.dirty();
 
             dirty();

@@ -1,6 +1,7 @@
 package me.kirillirik.manulab.main.table.product;
 
 import imgui.ImGui;
+import imgui.flag.ImGuiInputTextFlags;
 import me.kirillirik.database.Database;
 import me.kirillirik.manulab.main.TableType;
 import me.kirillirik.manulab.main.table.Table;
@@ -36,13 +37,13 @@ public final class ProductTable extends Table<ProductRow> {
     }
 
     @Override
-    protected void addRow(int index, ProductRow row) {
+    protected void addRow(int index, boolean canEdit, ProductRow row) {
         ImGui.tableSetColumnIndex(1);
         ImGui.text(String.valueOf(row.getID()));
 
         ImGui.tableSetColumnIndex(2);
         ImGui.pushItemWidth(ImGui.getContentRegionAvailX());
-        if (ImGui.inputText("##type",  row.type())) {
+        if (ImGui.inputText("##type",  row.type(), canEdit ? ImGuiInputTextFlags.Password : ImGuiInputTextFlags.ReadOnly)) {
             row.dirty();
 
             dirty();
