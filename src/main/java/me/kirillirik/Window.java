@@ -6,6 +6,7 @@ import imgui.flag.ImGuiConfigFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import me.kirillirik.manulab.Manulab;
+import me.kirillirik.manulab.main.Editor;
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -90,6 +91,12 @@ public final class Window {
     }
 
     public void run() {
+
+        try {
+            Editor.loadTexture();
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
 
         manulab.tryLoadSession();
         while (!glfwWindowShouldClose(window) && Manulab.getState() != Manulab.State.CLOSE) {

@@ -24,6 +24,8 @@ repositories {
 dependencies {
     compileOnly "org.jetbrains:annotations:23.0.0"
 
+    implementation 'org.joml:joml:1.10.4'
+
     implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
 
     implementation "org.lwjgl:lwjgl"
