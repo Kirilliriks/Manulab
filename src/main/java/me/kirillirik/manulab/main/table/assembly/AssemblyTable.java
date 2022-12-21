@@ -2,7 +2,6 @@ package me.kirillirik.manulab.main.table.assembly;
 
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
-import imgui.flag.ImGuiColorEditFlags;
 import imgui.flag.ImGuiInputTextFlags;
 import me.kirillirik.User;
 import me.kirillirik.database.Database;

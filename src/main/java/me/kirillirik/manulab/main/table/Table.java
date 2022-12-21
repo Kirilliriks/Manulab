@@ -123,18 +123,14 @@ public abstract class Table <T extends TableRow> {
                 if (row.isNewRow()) {
                     try {
                         insertRow(row);
-                    } catch (Throwable ignored) {
-
-                    }
+                    } catch (Throwable ignored) { }
 
                     continue;
                 }
 
                 try {
                     updateRow(row);
-                } catch (Throwable ignored) {
-
-                }
+                } catch (Throwable ignored) { }
             }
         }
 
