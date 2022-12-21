@@ -10,6 +10,7 @@ import me.kirillirik.database.Database;
 import me.kirillirik.manulab.auth.Permission;
 import me.kirillirik.manulab.auth.Role;
 import me.kirillirik.manulab.main.TableType;
+import org.apache.commons.lang3.tuple.MutablePair;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,6 +19,7 @@ import java.util.*;
 public abstract class Table <T extends TableRow> {
 
     protected final int columnCount;
+    protected final MutablePair<Integer, Boolean> columnSort;
     protected final TableType type;
     protected final List<T> rows;
     protected final Set<T> selectedRows;
@@ -27,6 +29,9 @@ public abstract class Table <T extends TableRow> {
         super();
 
         this.columnCount = columnCount;
+        this.columnSort = new MutablePair<>();
+        this.columnSort.setLeft(0);
+        this.columnSort.setRight(true);
         this.type = type;
         this.rows = Collections.synchronizedList(new ArrayList<>());
         this.selectedRows = new HashSet<>();
@@ -43,6 +48,8 @@ public abstract class Table <T extends TableRow> {
     protected abstract void updateRow(T row);
 
     protected abstract void insertRow(T row);
+
+    protected abstract void sort();
 
     protected String selectWhat() {
         return "*";
@@ -153,7 +160,6 @@ public abstract class Table <T extends TableRow> {
         final boolean canEdit = equivalentRole.getPermissions().contains(Permission.EDIT);
 
         final int flags = ImGuiTableFlags.Resizable | ImGuiTableFlags.Reorderable | ImGuiTableFlags.Hideable |
-                          ImGuiTableFlags.Sortable | ImGuiTableFlags.SortMulti |
                           ImGuiTableFlags.RowBg | ImGuiTableFlags.Borders | ImGuiTableFlags.NoBordersInBody | ImGuiTableFlags.ScrollY;
 
         final String infoString = (dirty ? " - [Не сохранено] " : " - ") + (canEditAll ?  "" : (canEdit ? "[Частичное редактирование]" : "[Только просмотр]"));
@@ -168,11 +174,39 @@ public abstract class Table <T extends TableRow> {
 
         ImGui.tableHeadersRow();
 
-        ImGuiListClipper.forEach(rows.size(), new ImListClipperCallback() {
+        ImGuiListClipper.forEach(rows.size() + 1, new ImListClipperCallback() {
             @Override
             public void accept(int index) {
-                final T row = rows.get(index);
-                displayRow(index, canEditAll, row);
+                if (index == 0) {
+                    ImGui.pushID(index);
+                    ImGui.tableNextRow(ImGuiTableFlags.None, 10);
+                    for (int i = 0; i <= columnCount; i++) {
+                        ImGui.tableSetColumnIndex(i);
+
+                        if (columnSort.getLeft() == i && i != 0) {
+
+                            boolean sortType = columnSort.getRight();
+                            if (ImGui.button((sortType ? "/\\" : "\\/") + " ####" + i)) {
+                                sortType = !sortType;
+
+                                columnSort.setRight(sortType);
+
+                                sort();
+                            }
+                        } else {
+                            if (ImGui.button("X ####" + i)) {
+                                columnSort.setLeft(i);
+
+                                sort();
+                            }
+                        }
+                    }
+
+                    ImGui.popID();
+                } else {
+                    final T row = rows.get(index - 1);
+                    displayRow(index - 1, canEditAll, row);
+                }
             }
         });
 

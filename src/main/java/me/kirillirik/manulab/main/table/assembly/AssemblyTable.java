@@ -22,6 +22,47 @@ public final class AssemblyTable extends Table<AssemblyRow> {
     }
 
     @Override
+    protected void sort() {
+        switch (columnSort.left) {
+            case 1 -> rows.sort((o1, o2) -> {
+                if (columnSort.right) {
+                    return o1.getID() - o2.getID();
+                } else {
+                    return o2.getID() - o1.getID();
+                }
+            });
+            case 2 -> rows.sort((o1, o2) -> {
+                if (columnSort.right) {
+                    return o1.getAssemblyDate().compareTo(o2.getAssemblyDate());
+                } else {
+                    return o2.getAssemblyDate().compareTo(o1.getAssemblyDate());
+                }
+            });
+            case 3 -> rows.sort((o1, o2) -> {
+                if (columnSort.right) {
+                    return o1.getAmount() - o2.getAmount();
+                } else {
+                    return o2.getAmount() - o1.getAmount();
+                }
+            });
+            case 4 -> rows.sort((o1, o2) -> {
+                if (columnSort.right) {
+                    return o1.getCollectorID() - o2.getCollectorID();
+                } else {
+                    return o2.getCollectorID() - o1.getCollectorID();
+                }
+            });
+            case 5 -> rows.sort((o1, o2) -> {
+                if (columnSort.right) {
+                    return o1.getProductID() - o2.getProductID();
+                } else {
+                    return o2.getProductID() - o1.getProductID();
+                }
+            });
+        }
+    }
+
+    @Override
     protected AssemblyRow newRow() {
         return new AssemblyRow(-1, "Введите дату", -1, Auth.user().getCollectorID(), -1, true);
     }

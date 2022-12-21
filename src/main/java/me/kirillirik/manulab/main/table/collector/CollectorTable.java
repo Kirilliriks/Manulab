@@ -16,6 +16,40 @@ public final class CollectorTable extends Table<CollectorRow> {
     }
 
     @Override
+    protected void sort() {
+        switch (columnSort.left) {
+            case 1 -> rows.sort((o1, o2) -> {
+                if (columnSort.right) {
+                    return o1.getID() - o2.getID();
+                } else {
+                    return o2.getID() - o1.getID();
+                }
+            });
+            case 2 -> rows.sort((o1, o2) -> {
+                if (columnSort.right) {
+                    return o1.getSecondName().compareTo(o2.getSecondName());
+                } else {
+                    return o2.getSecondName().compareTo(o1.getSecondName());
+                }
+            });
+            case 3 -> rows.sort((o1, o2) -> {
+                if (columnSort.right) {
+                    return o1.getFirstName().compareTo(o2.getFirstName());
+                } else {
+                    return o2.getFirstName().compareTo(o1.getFirstName());
+                }
+            });
+            case 4 -> rows.sort((o1, o2) -> {
+                if (columnSort.right) {
+                    return o1.getManufactoryID() - o2.getManufactoryID();
+                } else {
+                    return o2.getManufactoryID() - o1.getManufactoryID();
+                }
+            });
+        }
+    }
+
+    @Override
     protected CollectorRow newRow() {
         return new CollectorRow(-1, "Введите фамилию", "Введите имя", -1, true);
     }

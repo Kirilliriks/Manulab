@@ -1,7 +1,6 @@
 package me.kirillirik.manulab.main.table.product;
 
 import imgui.ImGui;
-import imgui.flag.ImGuiInputTextFlags;
 import me.kirillirik.database.Database;
 import me.kirillirik.manulab.main.TableType;
 import me.kirillirik.manulab.main.table.Table;
@@ -13,6 +12,26 @@ public final class ProductTable extends Table<ProductRow> {
 
     public ProductTable() {
         super(TableType.PRODUCT, 2);
+    }
+
+    @Override
+    protected void sort() {
+        switch (columnSort.left) {
+            case 1 -> rows.sort((o1, o2) -> {
+                if (columnSort.right) {
+                    return o1.getID() - o2.getID();
+                } else {
+                    return o2.getID() - o1.getID();
+                }
+            });
+            case 2 -> rows.sort((o1, o2) -> {
+                if (columnSort.right) {
+                    return o1.getType().compareTo(o2.getType());
+                } else {
+                    return o2.getType().compareTo(o1.getType());
+                }
+            });
+        }
     }
 
     @Override
@@ -49,7 +68,7 @@ public final class ProductTable extends Table<ProductRow> {
 
         ImGui.tableSetColumnIndex(2);
         ImGui.pushItemWidth(ImGui.getContentRegionAvailX());
-        if (ImGui.inputText("##type",  row.type(), ImGuiInputTextFlags.Password)) {
+        if (ImGui.inputText("##type",  row.type())) {
             row.dirty();
 
             dirty();

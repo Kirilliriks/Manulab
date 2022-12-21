@@ -16,6 +16,26 @@ public final class ManufactoryTable extends Table<ManufactoryRow> {
     }
 
     @Override
+    protected void sort() {
+        switch (columnSort.left) {
+            case 1 -> rows.sort((o1, o2) -> {
+                if (columnSort.right) {
+                    return o1.getID() - o2.getID();
+                } else {
+                    return o2.getID() - o1.getID();
+                }
+            });
+            case 2 -> rows.sort((o1, o2) -> {
+                if (columnSort.right) {
+                    return o1.getName().compareTo(o2.getName());
+                } else {
+                    return o2.getName().compareTo(o1.getName());
+                }
+            });
+        }
+    }
+
+    @Override
     protected ManufactoryRow newRow() {
         return new ManufactoryRow(-1, "Введите имя", true);
     }

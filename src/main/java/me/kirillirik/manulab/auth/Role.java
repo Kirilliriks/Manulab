@@ -9,11 +9,11 @@ public final class Role {
 
     public static final List<Type> VALUES = new ArrayList<>();
 
-    public static final Type ADMIN = new Type("ADMIN");
-    public static final Type DIRECTOR = new Type("DIRECTOR");
-    public static final Type MANAGER = new Type("MANAGER");
-    public static final Type COLLECTOR = new Type("COLLECTOR");
-    public static final Type USER = new Type("USER");
+    public static final Type ADMIN = new Type(1, "ADMIN");
+    public static final Type DIRECTOR = new Type(2, "DIRECTOR");
+    public static final Type MANAGER = new Type(3, "MANAGER");
+    public static final Type COLLECTOR = new Type(4, "COLLECTOR");
+    public static final Type USER = new Type(5, "USER");
 
     private final String type;
     private final Set<Permission> permissions;
@@ -37,18 +37,23 @@ public final class Role {
     }
 
     public static Role of(String name) {
+        return type(name).get();
+    }
+
+    public static Type type(String name) {
         return switch (name.toUpperCase()) {
-            case "ADMIN" -> ADMIN.get();
-            case "DIRECTOR" -> DIRECTOR.get();
-            case "MANAGER" -> MANAGER.get();
-            case "COLLECTOR" -> COLLECTOR.get();
-            default -> USER.get();
+            case "ADMIN" -> ADMIN;
+            case "DIRECTOR" -> DIRECTOR;
+            case "MANAGER" -> MANAGER;
+            case "COLLECTOR" -> COLLECTOR;
+            default -> USER;
         };
     }
 
-    public record Type(String name) {
+    public record Type(int priority, String name) {
 
-        public Type(String name) {
+        public Type(int priority, String name) {
+            this.priority = priority;
             this.name = name;
 
             VALUES.add(this);

@@ -22,6 +22,41 @@ public final class UserTable extends Table<UserRow> {
     }
 
     @Override
+    protected void sort() {
+        switch (columnSort.left) {
+            case 1 -> rows.sort((o1, o2) -> {
+                if (columnSort.right) {
+                    return o1.getID() - o2.getID();
+                } else {
+                    return o2.getID() - o1.getID();
+                }
+            });
+            case 2 -> rows.sort((o1, o2) -> {
+                if (columnSort.right) {
+                    return o1.getLogin().compareTo(o2.getLogin());
+                } else {
+                    return o2.getLogin().compareTo(o1.getLogin());
+                }
+            });
+            case 3 -> { }
+            case 4 -> rows.sort((o1, o2) -> {
+                if (columnSort.right) {
+                    return Role.type(o2.getRole()).priority() - Role.type(o1.getRole()).priority();
+                } else {
+                    return Role.type(o1.getRole()).priority() - Role.type(o2.getRole()).priority();
+                }
+            });
+            case 5 -> rows.sort((o1, o2) -> {
+                if (columnSort.right) {
+                    return o1.getCollectorID() - o2.getCollectorID();
+                } else {
+                    return o2.getCollectorID() - o1.getCollectorID();
+                }
+            });
+        }
+    }
+
+    @Override
     protected UserRow newRow() {
         return new UserRow(-1, "Введите логин", "Выберите роль", -1, true);
     }
@@ -83,7 +118,6 @@ public final class UserTable extends Table<UserRow> {
         }
 
         ImGui.tableSetColumnIndex(2);
-        ImGui.pushItemWidth(ImGui.getContentRegionAvailX());
         if (ImGui.inputText("##login",  row.login())) {
             row.dirty();
 
@@ -91,7 +125,6 @@ public final class UserTable extends Table<UserRow> {
         }
 
         ImGui.tableSetColumnIndex(3);
-        ImGui.pushItemWidth(ImGui.getContentRegionAvailX());
 
         final ImString newPassword = new ImString();
         if (ImGui.inputText("##newPassword",  newPassword, ImGuiInputTextFlags.Password)) {
@@ -106,7 +139,6 @@ public final class UserTable extends Table<UserRow> {
         }
 
         ImGui.tableSetColumnIndex(4);
-        ImGui.pushItemWidth(ImGui.getContentRegionAvailX());
 
         final String userRole = row.getRole().toUpperCase();
         if (ImGui.beginCombo("##role", userRole)) {
@@ -128,7 +160,6 @@ public final class UserTable extends Table<UserRow> {
         }
 
         ImGui.tableSetColumnIndex(5);
-        ImGui.pushItemWidth(ImGui.getContentRegionAvailX());
         if (ImGui.inputInt("##collector_id",  row.collectorID(), 1, 0, ImGuiInputTextFlags.Password)) {
             row.dirty();
 
