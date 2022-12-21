@@ -38,7 +38,7 @@ public abstract class Table <T extends TableRow> {
 
     protected abstract void initTableConfig();
 
-    protected abstract void addRow(int index, boolean canEdit, T row);
+    protected abstract void displayRowData(int index, boolean canEdit, T row);
 
     protected abstract void updateRow(T row);
 
@@ -52,6 +52,57 @@ public abstract class Table <T extends TableRow> {
         rows.add(newRow());
 
         dirty = true;
+    }
+
+    protected void displayRow(int index, boolean canEdit, T row) {
+        ImGui.pushID(index);
+
+        ImGui.tableNextRow(ImGuiTableFlags.None, 10);
+
+        ImGui.tableSetColumnIndex(0);
+
+        final boolean selected = selectedRows.contains(row);
+        ImGui.pushStyleVar(ImGuiStyleVar.SelectableTextAlign, 0.5f, 0.5f);
+        if (ImGui.selectable(String.valueOf(index), selected)) {
+            if (selected) {
+                selectedRows.remove(row);
+            } else {
+                selectedRows.add(row);
+            }
+        }
+        ImGui.popStyleVar();
+
+        if (canEdit && ImGui.beginPopupContextItem()) {
+            if (ImGui.selectable("Добавить строку")) {
+                addNewRow();
+            }
+
+            if (ImGui.selectable("Удалить строку")) {
+                removeRow(row);
+
+                refresh(true);
+            }
+
+            if (selectedRows.size() != 0) {
+                if (ImGui.selectable("Удалить выбранные строки")) {
+                    removeSelectedRows();
+                }
+            }
+
+            if (ImGui.selectable("Обновить")) {
+                refresh(false);
+            }
+
+            if (ImGui.selectable("Сохранить")) {
+                refresh(true);
+            }
+
+            ImGui.endPopup();
+        }
+
+        displayRowData(index, canEdit, row);
+
+        ImGui.popID();
     }
 
     public void removeSelectedRows() {
@@ -70,11 +121,20 @@ public abstract class Table <T extends TableRow> {
                 }
 
                 if (row.isNewRow()) {
-                    insertRow(row);
+                    try {
+                        insertRow(row);
+                    } catch (Throwable ignored) {
+
+                    }
+
                     continue;
                 }
 
-                updateRow(row);
+                try {
+                    updateRow(row);
+                } catch (Throwable ignored) {
+
+                }
             }
         }
 
@@ -93,13 +153,14 @@ public abstract class Table <T extends TableRow> {
 
     public void update(Role role) {
         final Role equivalentRole =  type.getRole(role.getTypeName());
-        final boolean canEdit = equivalentRole.getPermissions().contains(Permission.EDIT_ALL);
+        final boolean canEditAll = equivalentRole.getPermissions().contains(Permission.EDIT_ALL);
+        final boolean canEdit = equivalentRole.getPermissions().contains(Permission.EDIT);
 
         final int flags = ImGuiTableFlags.Resizable | ImGuiTableFlags.Reorderable | ImGuiTableFlags.Hideable |
                           ImGuiTableFlags.Sortable | ImGuiTableFlags.SortMulti |
                           ImGuiTableFlags.RowBg | ImGuiTableFlags.Borders | ImGuiTableFlags.NoBordersInBody | ImGuiTableFlags.ScrollY;
 
-        final String infoString = canEdit ? (dirty ? " - [Не сохранено]" : "") : " - [Только просмотр]";
+        final String infoString = (dirty ? " - [Не сохранено] " : " - ") + (canEditAll ?  "" : (canEdit ? "[Частичное редактирование]" : "[Только просмотр]"));
         ImGui.text("Таблица " + type.getName() + infoString);
 
         ImGui.beginChild(type.getName() + "_child", ImGui.getContentRegionAvailX(), ImGui.getContentRegionAvailY() * 0.8f, false);
@@ -115,55 +176,7 @@ public abstract class Table <T extends TableRow> {
             @Override
             public void accept(int index) {
                 final T row = rows.get(index);
-
-                ImGui.pushID(index);
-
-                ImGui.tableNextRow(ImGuiTableFlags.None, 10);
-
-                ImGui.tableSetColumnIndex(0);
-
-                final boolean selected = selectedRows.contains(row);
-                ImGui.pushStyleVar(ImGuiStyleVar.SelectableTextAlign, 0.5f, 0.5f);
-                if (ImGui.selectable(String.valueOf(index), selected)) {
-                    if (selected) {
-                        selectedRows.remove(row);
-                    } else {
-                        selectedRows.add(row);
-                    }
-                }
-                ImGui.popStyleVar();
-
-                if (canEdit && ImGui.beginPopupContextItem()) {
-                    if (ImGui.selectable("Добавить строку")) {
-                        addNewRow();
-                    }
-
-                    if (ImGui.selectable("Удалить строку")) {
-                        removeRow(row);
-
-                        refresh(true);
-                    }
-
-                    if (selectedRows.size() != 0) {
-                        if (ImGui.selectable("Удалить выбранные строки")) {
-                            removeSelectedRows();
-                        }
-                    }
-
-                    if (ImGui.selectable("Обновить")) {
-                        refresh(false);
-                    }
-
-                    if (ImGui.selectable("Сохранить")) {
-                        refresh(true);
-                    }
-
-                    ImGui.endPopup();
-                }
-
-                addRow(index, canEdit, row);
-
-                ImGui.popID();
+                displayRow(index, canEditAll, row);
             }
         });
 
@@ -171,7 +184,7 @@ public abstract class Table <T extends TableRow> {
 
         ImGui.endChild();
 
-        if (canEdit) {
+        if (canEditAll || canEdit) {
             if (ImGui.button("Добавить строку")) {
                 addNewRow();
             }
@@ -186,7 +199,7 @@ public abstract class Table <T extends TableRow> {
             refresh(false);
         }
 
-        if (canEdit) {
+        if (canEditAll || canEdit) {
             ImGui.sameLine();
             if (ImGui.button("Сохранить")) {
                 refresh(true);

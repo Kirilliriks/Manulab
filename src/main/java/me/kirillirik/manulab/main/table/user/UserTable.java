@@ -63,9 +63,24 @@ public final class UserTable extends Table<UserRow> {
     }
 
     @Override
-    protected void addRow(int index, boolean canEdit, UserRow row) {
+    protected void displayRowData(int index, boolean canEdit, UserRow row) {
         ImGui.tableSetColumnIndex(1);
         ImGui.text(String.valueOf(row.getID()));
+
+        if (!canEdit) {
+            ImGui.tableSetColumnIndex(2);
+            ImGui.text(row.getLogin());
+
+            ImGui.tableSetColumnIndex(3);
+            ImGui.text("");
+
+            ImGui.tableSetColumnIndex(4);
+            ImGui.text(row.getRole());
+
+            ImGui.tableSetColumnIndex(5);
+            ImGui.text(String.valueOf(row.getCollectorID()));
+            return;
+        }
 
         ImGui.tableSetColumnIndex(2);
         ImGui.pushItemWidth(ImGui.getContentRegionAvailX());
@@ -79,7 +94,7 @@ public final class UserTable extends Table<UserRow> {
         ImGui.pushItemWidth(ImGui.getContentRegionAvailX());
 
         final ImString newPassword = new ImString();
-        if (ImGui.inputText("##newPassword",  newPassword, canEdit ? ImGuiInputTextFlags.Password : ImGuiInputTextFlags.ReadOnly)) {
+        if (ImGui.inputText("##newPassword",  newPassword, ImGuiInputTextFlags.Password)) {
 
             row.newSalt().set(PasswordUtil.generateSalt());
             row.newPassword().set(PasswordUtil.hashPassword(newPassword.get(), row.newSalt().toString()));
@@ -94,31 +109,27 @@ public final class UserTable extends Table<UserRow> {
         ImGui.pushItemWidth(ImGui.getContentRegionAvailX());
 
         final String userRole = row.getRole().toUpperCase();
-        if (canEdit) {
-            if (ImGui.beginCombo("##role", userRole)) {
-                for (final var type : Role.VALUES) {
-                    if (userRole.equals(type.name())) {
-                        continue;
-                    }
-
-                    if (ImGui.selectable(type.name())) {
-                        row.role().set(type.name());
-
-                        row.dirty();
-
-                        dirty();
-                    }
+        if (ImGui.beginCombo("##role", userRole)) {
+            for (final var type : Role.VALUES) {
+                if (userRole.equals(type.name())) {
+                    continue;
                 }
 
-                ImGui.endCombo();
+                if (ImGui.selectable(type.name())) {
+                    row.role().set(type.name());
+
+                    row.dirty();
+
+                    dirty();
+                }
             }
-        } else {
-            ImGui.text(userRole);
+
+            ImGui.endCombo();
         }
 
         ImGui.tableSetColumnIndex(5);
         ImGui.pushItemWidth(ImGui.getContentRegionAvailX());
-        if (ImGui.inputInt("##collector_id",  row.collectorID(), canEdit ? ImGuiInputTextFlags.Password : ImGuiInputTextFlags.ReadOnly)) {
+        if (ImGui.inputInt("##collector_id",  row.collectorID(), 1, 0, ImGuiInputTextFlags.Password)) {
             row.dirty();
 
             dirty();

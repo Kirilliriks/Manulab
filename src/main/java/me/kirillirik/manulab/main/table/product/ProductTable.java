@@ -37,13 +37,19 @@ public final class ProductTable extends Table<ProductRow> {
     }
 
     @Override
-    protected void addRow(int index, boolean canEdit, ProductRow row) {
+    protected void displayRowData(int index, boolean canEdit, ProductRow row) {
         ImGui.tableSetColumnIndex(1);
         ImGui.text(String.valueOf(row.getID()));
 
+        if (!canEdit) {
+            ImGui.tableSetColumnIndex(2);
+            ImGui.text(row.getType());
+            return;
+        }
+
         ImGui.tableSetColumnIndex(2);
         ImGui.pushItemWidth(ImGui.getContentRegionAvailX());
-        if (ImGui.inputText("##type",  row.type(), canEdit ? ImGuiInputTextFlags.Password : ImGuiInputTextFlags.ReadOnly)) {
+        if (ImGui.inputText("##type",  row.type(), ImGuiInputTextFlags.Password)) {
             row.dirty();
 
             dirty();

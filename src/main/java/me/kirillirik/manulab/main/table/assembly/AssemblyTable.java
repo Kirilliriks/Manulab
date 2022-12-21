@@ -1,8 +1,14 @@
 package me.kirillirik.manulab.main.table.assembly;
 
 import imgui.ImGui;
+import imgui.flag.ImGuiCol;
+import imgui.flag.ImGuiColorEditFlags;
 import imgui.flag.ImGuiInputTextFlags;
+import me.kirillirik.User;
 import me.kirillirik.database.Database;
+import me.kirillirik.manulab.auth.Auth;
+import me.kirillirik.manulab.auth.Permission;
+import me.kirillirik.manulab.auth.Role;
 import me.kirillirik.manulab.main.TableType;
 import me.kirillirik.manulab.main.table.Table;
 
@@ -18,7 +24,7 @@ public final class AssemblyTable extends Table<AssemblyRow> {
 
     @Override
     protected AssemblyRow newRow() {
-        return new AssemblyRow(-1, "Введите дату", -1, -1, -1, true);
+        return new AssemblyRow(-1, "Введите дату", -1, Auth.user().getCollectorID(), -1, true);
     }
 
     @Override
@@ -45,12 +51,24 @@ public final class AssemblyTable extends Table<AssemblyRow> {
     }
 
     @Override
-    protected void addRow(int index, boolean canEdit, AssemblyRow row) {
+    protected void displayRow(int index, boolean canEdit, AssemblyRow row) {
+        if (!canEdit && Auth.user().getCollectorID() == row.getCollectorID()) {
+            canEdit = true;
+        }
+
+        super.displayRow(index, canEdit, row);
+    }
+
+    @Override
+    protected void displayRowData(int index, boolean canEdit, AssemblyRow row) {
         ImGui.tableSetColumnIndex(1);
         ImGui.text(String.valueOf(row.getID()));
 
+        if (!canEdit) {
+            ImGui.pushStyleColor(ImGuiCol.Text, 0, 0, 0, 255);
+        }
+
         ImGui.tableSetColumnIndex(2);
-        ImGui.pushItemWidth(ImGui.getContentRegionAvailX());
         if (ImGui.inputText("##assembly_date",  row.assemblyDate(), canEdit ? ImGuiInputTextFlags.None : ImGuiInputTextFlags.ReadOnly)) {
             row.dirty();
 
@@ -58,27 +76,34 @@ public final class AssemblyTable extends Table<AssemblyRow> {
         }
 
         ImGui.tableSetColumnIndex(3);
-        ImGui.pushItemWidth(ImGui.getContentRegionAvailX());
-        if (ImGui.inputInt("##amount",  row.amount(), canEdit ? ImGuiInputTextFlags.None : ImGuiInputTextFlags.ReadOnly)) {
+        if (ImGui.inputInt("##amount",  row.amount(), 1, 0, canEdit ? ImGuiInputTextFlags.None : ImGuiInputTextFlags.ReadOnly)) {
             row.dirty();
 
             dirty();
         }
 
+
+        final User user = Auth.user();
+        final Role userRole = user.getRole();
+        final Role tableRole = type.getRole(userRole.getTypeName());
+        final boolean cantEdit = tableRole != null &&  tableRole.getPermissions().contains(Permission.EDIT) && user.getCollectorID() == row.getCollectorID();
+
         ImGui.tableSetColumnIndex(4);
-        ImGui.pushItemWidth(ImGui.getContentRegionAvailX());
-        if (ImGui.inputInt("##collector_id",  row.collectorID(), canEdit ? ImGuiInputTextFlags.None : ImGuiInputTextFlags.ReadOnly)) {
+        if (ImGui.inputInt("##collector_id", row.collectorID(), 1, 0, canEdit && !cantEdit ? ImGuiInputTextFlags.None : ImGuiInputTextFlags.ReadOnly)) {
             row.dirty();
 
             dirty();
         }
 
         ImGui.tableSetColumnIndex(5);
-        ImGui.pushItemWidth(ImGui.getContentRegionAvailX());
-        if (ImGui.inputInt("##product_id",  row.productID(), canEdit ? ImGuiInputTextFlags.None : ImGuiInputTextFlags.ReadOnly)) {
+        if (ImGui.inputInt("##product_id",  row.productID(), 1, 0, canEdit ? ImGuiInputTextFlags.None : ImGuiInputTextFlags.ReadOnly)) {
             row.dirty();
 
             dirty();
+        }
+
+        if (!canEdit) {
+            ImGui.popStyleColor();
         }
     }
 

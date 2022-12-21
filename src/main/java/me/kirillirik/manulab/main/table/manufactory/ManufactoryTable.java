@@ -37,13 +37,19 @@ public final class ManufactoryTable extends Table<ManufactoryRow> {
     }
 
     @Override
-    protected void addRow(int index, boolean canEdit, ManufactoryRow row) {
+    protected void displayRowData(int index, boolean canEdit, ManufactoryRow row) {
         ImGui.tableSetColumnIndex(1);
         ImGui.text(String.valueOf(row.getID()));
 
+        if (!canEdit) {
+            ImGui.tableSetColumnIndex(2);
+            ImGui.text(row.getName());
+            return;
+        }
+
         ImGui.tableSetColumnIndex(2);
         ImGui.pushItemWidth(ImGui.getContentRegionAvailX());
-        if (ImGui.inputText("##name",  row.name(), canEdit ? ImGuiInputTextFlags.None : ImGuiInputTextFlags.ReadOnly)) {
+        if (ImGui.inputText("##name",  row.name(), ImGuiInputTextFlags.None)) {
             row.dirty();
 
             dirty();

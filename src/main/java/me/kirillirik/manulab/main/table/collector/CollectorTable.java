@@ -42,29 +42,38 @@ public final class CollectorTable extends Table<CollectorRow> {
     }
 
     @Override
-    protected void addRow(int index, boolean canEdit, CollectorRow row) {
+    protected void displayRowData(int index, boolean canEdit, CollectorRow row) {
         ImGui.tableSetColumnIndex(1);
         ImGui.text(String.valueOf(row.getID()));
 
+        if (!canEdit) {
+            ImGui.tableSetColumnIndex(2);
+            ImGui.text(row.getSecondName());
+
+            ImGui.tableSetColumnIndex(3);
+            ImGui.text(row.getFirstName());
+
+            ImGui.tableSetColumnIndex(4);
+            ImGui.text(String.valueOf(row.getManufactoryID()));
+            return;
+        }
+
         ImGui.tableSetColumnIndex(2);
-        ImGui.pushItemWidth(ImGui.getContentRegionAvailX());
-        if (ImGui.inputText("##second_name",  row.secondName(), canEdit ? ImGuiInputTextFlags.None : ImGuiInputTextFlags.ReadOnly)) {
+        if (ImGui.inputText("##second_name",  row.secondName(), ImGuiInputTextFlags.None)) {
             row.dirty();
 
             dirty();
         }
 
         ImGui.tableSetColumnIndex(3);
-        ImGui.pushItemWidth(ImGui.getContentRegionAvailX());
-        if (ImGui.inputText("##first_name",  row.firstName(), canEdit ? ImGuiInputTextFlags.None : ImGuiInputTextFlags.ReadOnly)) {
+        if (ImGui.inputText("##first_name",  row.firstName(), ImGuiInputTextFlags.None)) {
             row.dirty();
 
             dirty();
         }
 
         ImGui.tableSetColumnIndex(4);
-        ImGui.pushItemWidth(ImGui.getContentRegionAvailX());
-        if (ImGui.inputInt("##manufactory_id",  row.manufactoryID(), canEdit ? ImGuiInputTextFlags.None : ImGuiInputTextFlags.ReadOnly)) {
+        if (ImGui.inputInt("##manufactory_id",  row.manufactoryID(), 1, 0, ImGuiInputTextFlags.None)) {
             row.dirty();
 
             dirty();
