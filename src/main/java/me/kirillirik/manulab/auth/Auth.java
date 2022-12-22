@@ -221,7 +221,7 @@ public final class Auth {
     public static void clearSession() {
         final File file = new File("session.dat");
         if (!file.delete()) {
-            System.out.println("SULA");
+            System.out.println("NOT DELETED");
         }
     }
 
